@@ -5,7 +5,7 @@ import (
 	"github.com/micro/go-grpc"
 	"github.com/micro/go-micro"
 	"github.com/micro/go-plugins/registry/etcdv3"
-	greeter "go-micro/greeter/proto"
+	greeter "go-micro/cmd/greeter/proto"
 	"log"
 	"time"
 )
