@@ -3,7 +3,6 @@ package model
 import (
 	"context"
 	"errors"
-	"fmt"
 	"go-micro/cmd/bank/proto"
 	"go-micro/tool"
 )
@@ -37,7 +36,6 @@ func (m *BankModel) Show(ctx context.Context, req *bank.Request, rsp *bank.Respo
 
 	if req.Id > 0 {
 		mysql.First(m, "id = ?", req.Id)
-		fmt.Println(req.Id)
 		if m.Id != req.Id {
 			return errors.New("empty rows")
 		}
