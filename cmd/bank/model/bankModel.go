@@ -32,7 +32,7 @@ func (m *BankModel) TableName() string {
 
 func (m *BankModel) Show(ctx context.Context, req *bank.Request, rsp *bank.Response) error {
 
-	mysql := tool.GetConn()
+	mysql := tool.GetMasterConn()
 
 	if req.Id > 0 {
 		mysql.First(m, "id = ?", req.Id)
@@ -51,7 +51,7 @@ func (m *BankModel) Show(ctx context.Context, req *bank.Request, rsp *bank.Respo
 	}
 
 	// 获取新的 连接（这里没必要获取，只不过是 举个例子）
-	query := tool.GetConn()
+	query := tool.GetMasterConn()
 	if req.SiteId > 0 {
 		query = query.Where("site_id = ?", req.SiteId)
 	}
