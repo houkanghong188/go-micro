@@ -5,8 +5,7 @@ import (
 	"github.com/micro/go-grpc"
 	"github.com/micro/go-micro"
 	"github.com/micro/go-plugins/registry/etcdv3"
-	"go-micro/greeter/proto"
-	"go-micro/tool"
+	greeter "go-micro/cmd/greeter/proto"
 	"log"
 	"time"
 )
@@ -19,19 +18,6 @@ func (g *Greeter) Hello(ctx context.Context, req *greeter.Request, rsp *greeter.
 	return nil
 }
 
-type TemplateStoreModel struct {
-	TemplateId       string
-	DesignerId       int32
-	Price            int32
-	Version          int32
-	Star             int32
-	Level            int32
-	Sort             int32
-	IsVipFree        int32
-	TemplateInfo     string
-	TemplateProperty string
-}
-
 func main() {
 	service := grpc.NewService(
 		micro.Name("greeter"),
@@ -39,12 +25,6 @@ func main() {
 		micro.RegisterTTL(30*time.Second),
 		micro.RegisterInterval(10*time.Second),
 	)
-
-	m := &TemplateStoreModel{}
-	defer tool.Mysql.Close()
-	tool.Mysql.First(m, "id > ? ", 0)
-
-	log.Print(m.TemplateId)
 
 	service.Init()
 

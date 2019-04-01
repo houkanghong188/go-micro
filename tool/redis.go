@@ -3,7 +3,7 @@ package tool
 import (
 	"fmt"
 	"github.com/gomodule/redigo/redis"
-	"grpc-lb/cmd/config"
+	"go-micro/config"
 	"time"
 )
 
@@ -32,12 +32,12 @@ func init() {
 	}
 }
 
-func test() {
-	pool := RedisPool
-	conn := pool.Get()
-	defer pool.Close()
+// todo 处理 err 事件
+func Get() (redis.Conn, error) {
+	conn := RedisPool.Get()
 	if conn.Err() != nil {
-		//TODO
+		return nil, conn.Err()
 	}
 
+	return conn, nil
 }

@@ -1,7 +1,12 @@
+### etcdv3 安装
+
 ### install micro工具
     go install github.com/micro/micro
+    如果是 报错包不存在，则可以  
+    go build -i -o micro  ./vendor/github.com/micro/micro/main.go 
+    也可构建出
 ### micro web 界面启动
-    micro --server=grpc --client=grpc --transport=grpc --broker=grpc web    
+    ./micro --server=grpc --client=grpc --transport=grpc --broker=grpc --registry=etcdv3  web
 
 ### 使用 etcd3 服务发现
     启动时 如果 address 不是 127.0.0.1:2379
