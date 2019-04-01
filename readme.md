@@ -17,3 +17,11 @@
 ### 使用 protoc 生成代码 
     protoc --proto_path=$GOPATH/src:. --micro_out=. --go_out=. greeter.proto
 ### 问题列表
+
+### api 调用
+    1 启动 api 
+    ./micro --server=grpc --client=grpc --transport=grpc --broker=grpc --registry=etcdv3  api
+    2 调用 bank 服务 bank.show 方法
+    HOST: http://localhost:8080/rpc
+    HEADER: Content-Type: application/json
+    BODY: {"service": "go.micro.srv.bank", "method": "Bank.Show", "request": {"id":1}}
