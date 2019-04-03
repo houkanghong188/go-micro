@@ -4,8 +4,8 @@ service WorksAudit {
     rpc Show(Request) returns (Response) {}
     rpc Index(Request) returns (Response) {}
     rpc WorksUpdate(Request) returns (Response) {}
-
 }
+
 service Works{
     rpc WorksDetail(Request) returns (WorksResponse) {}
 }
@@ -104,7 +104,7 @@ message DailyRequest {
 message DailyResponse {
     message Notify {
         int32   id = 1;
-        string   pid = 2;
+        string  pid = 2;
         string  access_date = 3;
         string  event_id = 13;
         int32   pv = 4;

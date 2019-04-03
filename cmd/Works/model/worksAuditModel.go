@@ -151,7 +151,7 @@ func (m *WorksAuditModel) WorksUpdate(ctx context.Context, req *worksAudit.Reque
 	query := tool.GetMasterConn()
 
 	if req.WorksId == "" || req.Uid == 0 {
-		return errors.New("empty rows")
+		return errors.New("empty rows works_id | uid")
 	}
 
 	works := works{}
