@@ -24,6 +24,7 @@ func main() {
 
 	_ = worksAudit.RegisterWorksAuditHandler(service.Server(), model.NewWorksAuditModel())
 	_ = worksAudit.RegisterWorksHandler(service.Server(), model.NewWorksModel())
+	_ = worksAudit.RegisterDailyPvUvHandler(service.Server(), model.NewDailyPvUvModel())
 
 	if err := service.Run(); err != nil {
 		log.Fatal(err)

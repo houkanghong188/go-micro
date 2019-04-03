@@ -11,6 +11,8 @@ It has these top-level messages:
 	Request
 	Response
 	WorksResponse
+	DailyRequest
+	DailyResponse
 */
 package worksAudit
 
@@ -190,4 +192,63 @@ type worksHandler struct {
 
 func (h *worksHandler) WorksDetail(ctx context.Context, in *Request, out *WorksResponse) error {
 	return h.WorksHandler.WorksDetail(ctx, in, out)
+}
+
+// Client API for DailyPvUv service
+
+type DailyPvUvService interface {
+	Show(ctx context.Context, in *DailyRequest, opts ...client.CallOption) (*DailyResponse, error)
+}
+
+type dailyPvUvService struct {
+	c    client.Client
+	name string
+}
+
+func NewDailyPvUvService(name string, c client.Client) DailyPvUvService {
+	if c == nil {
+		c = client.NewClient()
+	}
+	if len(name) == 0 {
+		name = "dailypvuv"
+	}
+	return &dailyPvUvService{
+		c:    c,
+		name: name,
+	}
+}
+
+func (c *dailyPvUvService) Show(ctx context.Context, in *DailyRequest, opts ...client.CallOption) (*DailyResponse, error) {
+	req := c.c.NewRequest(c.name, "DailyPvUv.Show", in)
+	out := new(DailyResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// Server API for DailyPvUv service
+
+type DailyPvUvHandler interface {
+	Show(context.Context, *DailyRequest, *DailyResponse) error
+}
+
+func RegisterDailyPvUvHandler(s server.Server, hdlr DailyPvUvHandler, opts ...server.HandlerOption) error {
+	type dailyPvUv interface {
+		Show(ctx context.Context, in *DailyRequest, out *DailyResponse) error
+	}
+	type DailyPvUv struct {
+		dailyPvUv
+	}
+	h := &dailyPvUvHandler{hdlr}
+	return s.Handle(s.NewHandler(&DailyPvUv{h}, opts...))
+}
+
+type dailyPvUvHandler struct {
+	DailyPvUvHandler
+}
+
+func (h *dailyPvUvHandler) Show(ctx context.Context, in *DailyRequest, out *DailyResponse) error {
+	return h.DailyPvUvHandler.Show(ctx, in, out)
 }

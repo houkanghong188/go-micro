@@ -81,3 +81,45 @@ message WorksResponse {
 }
 
 
+service DailyPvUv {
+    rpc Show(DailyRequest) returns (DailyResponse) {}
+}
+
+
+message DailyRequest {
+    string name = 1;
+    string type = 2;
+    string value = 3;
+    string create_time = 4;
+    string update_time = 5;
+    int32  is_delete = 6;
+    int32  page = 7;
+    int32  page_size = 8;
+    int32   id = 9;
+    string works_id = 10;
+    int32 status = 12;
+    repeated int32 uids = 11;
+}
+
+message DailyResponse {
+    message Notify {
+        int32   id = 1;
+        string   pid = 2;
+        string  access_date = 3;
+        string  event_id = 13;
+        int32   pv = 4;
+        int32   uv  = 5;
+        int32   tail_ad = 6;
+        int32   share = 7;
+        int32   total_share = 8;
+        int32   total_tail_ad = 9;
+        int32   total_pv = 10;
+        int32   total_uv = 11;
+        int32   uid = 12;
+    }
+    repeated Notify data = 12;
+    int32 affectedRows = 11;
+    int32 total = 13;
+}
+
+

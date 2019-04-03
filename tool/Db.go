@@ -8,6 +8,7 @@ import (
 
 var MysqlMaster *gorm.DB
 var MysqlSlaver *gorm.DB
+var MysqlStatistics *gorm.DB
 
 func init() {
 	var err error
@@ -27,10 +28,22 @@ func init() {
 
 	MysqlSlaver.DB().SetMaxIdleConns(config.MysqlSlaverMaxIdleConns)
 	MysqlSlaver.DB().SetMaxOpenConns(config.MysqlSlaverMaxOpenConns)
+
+	// 统计库
+	MysqlStatistics, err = gorm.Open("mysql", config.MysqlStatisticsDns)
+	if err != nil {
+		panic(err)
+	}
+	MysqlStatistics.DB().SetMaxIdleConns(config.MysqlMasterMaxIdleConns)
+	MysqlStatistics.DB().SetMaxOpenConns(config.MysqlMasterMaxOpenConns)
 }
 
 func GetMasterConn() *gorm.DB {
 	return MysqlMaster
+}
+
+func GetStatisticsConn() *gorm.DB {
+	return MysqlStatistics
 }
 
 func GetSlavelConn() *gorm.DB {
