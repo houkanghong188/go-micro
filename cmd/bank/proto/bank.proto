@@ -2,6 +2,7 @@ syntax = "proto3";
 
 service Bank {
     rpc Show(Request) returns (Response) {}
+
 }
 
 message Request {
@@ -11,11 +12,9 @@ message Request {
 }
 
 message Response {
-    int32 id = 1;
-    int32 siteId = 2;
-    int32 status = 3;
-    string account = 4;
-    string card = 5;
-    string tel = 6;
-    string fianacialContact = 7;
+    message Result {
+        string url = 1;
+        string title = 2;
+        repeated string snippets = 3;
+    }
 }
