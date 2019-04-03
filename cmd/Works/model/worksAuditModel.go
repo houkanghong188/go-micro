@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"go-micro/cmd/works/proto"
+	"go-micro/cmd/Works/proto"
 	"go-micro/tool"
 	"strconv"
 	"time"
@@ -61,6 +61,10 @@ type works struct {
 // TableName sets the insert table name for this struct type
 func (p *works) TableName(uid int32) string {
 	return "platv5_works_" + strconv.Itoa(int(uid%16))
+}
+
+func NewWorksModel() *works {
+	return &works{}
 }
 
 func NewWorksAuditModel() *WorksAuditModel {
@@ -152,11 +156,25 @@ func (m *WorksAuditModel) WorksUpdate(ctx context.Context, req *worksAudit.Reque
 
 	works := works{}
 
-	query.Table(works.TableName(req.Uid)).Where("id = ?", req.Id).First(&works)
+	query.Table(works.TableName(req.Uid)).Where("works_id = ?", req.WorksId).First(&works)
 
-	works.Status = req.Status
+	return nil
+}
 
-	query.Table(works.TableName(req.Uid)).Where("works_id = ?", req.WorksId).Updates(&works)
+func (m *works) WorksDetail(ctx context.Context, req *worksAudit.Request, rsp *worksAudit.WorksResponse) error {
+
+	// 获取新的 连接（这里没必要获取，只不过是 举个例子）
+	query := tool.GetMasterConn()
+
+	if req.WorksId == "" || req.Uid == 0 {
+		return errors.New("empty rows")
+	}
+
+	work := []*worksAudit.WorksResponse_Notify{}
+
+	query.Table(m.TableName(req.Uid)).Where("works_id = ?", req.WorksId).First(&work)
+
+	rsp.Data = work
 
 	return nil
 }

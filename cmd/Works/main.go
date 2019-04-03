@@ -4,8 +4,8 @@ import (
 	"github.com/micro/go-grpc"
 	"github.com/micro/go-micro"
 	"github.com/micro/go-plugins/registry/etcdv3"
+	"go-micro/cmd/Works/proto"
 	"go-micro/cmd/works/model"
-	"go-micro/cmd/works/proto"
 	"log"
 	"time"
 )
@@ -23,6 +23,7 @@ func main() {
 	service.Init()
 
 	_ = worksAudit.RegisterWorksAuditHandler(service.Server(), model.NewWorksAuditModel())
+	_ = worksAudit.RegisterWorksHandler(service.Server(), model.NewWorksModel())
 
 	if err := service.Run(); err != nil {
 		log.Fatal(err)
