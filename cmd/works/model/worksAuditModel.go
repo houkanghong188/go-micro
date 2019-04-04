@@ -127,26 +127,31 @@ func (m *WorksAuditModel) Index(ctx context.Context, req *worksAudit.Request, rs
 	// 获取新的 连接（这里没必要获取，只不过是 举个例子）
 	query := tool.GetMasterConn()
 
-	query.Table(m.TableName()).Count(&rsp.Total)
-
 	if req.PageSize == 0 {
 		return errors.New("empty rows")
 	}
+
+	if req.Type != "" {
+		query = query.Where("type = ?", req.Type)
+	}
+
+	if len(req.AuditStatus) > 0 {
+		query = query.Where("status in (?)", req.AuditStatus)
+	}
+
+	query.Table(m.TableName()).Count(&rsp.Total)
 
 	data := []*worksAudit.Response_Notify{}
 
 	query.Table(m.TableName()).Limit(req.PageSize).Offset(req.PageSize * req.Page).Find(&data)
 
+	newQuery := tool.GetMasterConn()
 	for k, v := range data {
 		tableName := "platv5_works_" + strconv.Itoa(int(v.Uid%16))
 		work := works{}
-		query.Table(tableName).Where("works_id = ?", v.EventId).First(&work)
+		newQuery.Table(tableName).Where("works_id = ?", v.EventId).First(&work)
 
-		fmt.Println(work)
-
-		fmt.Println(work == (works{}))
 		if work == (works{}) {
-			fmt.Println(work)
 			data[k].Content = " "
 			data[k].Title = " "
 		} else {
