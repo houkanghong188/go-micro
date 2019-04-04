@@ -26,7 +26,6 @@ message Request {
 message Response {
     message Notify {
         int32   id = 9;
-//        string name = 1;
         string nickname = 2;
         string Username = 3;
         int32  UserBalance = 4;

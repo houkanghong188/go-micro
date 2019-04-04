@@ -8,8 +8,8 @@ import (
 	model2 "go-micro/cmd/auditConf/model"
 	model3 "go-micro/cmd/user/model"
 
+	"go-micro/cmd/User/proto"
 	"go-micro/cmd/auditConf/proto"
-	"go-micro/cmd/user/proto"
 	"go-micro/cmd/works/model"
 	"log"
 	"time"
@@ -32,7 +32,6 @@ func main() {
 	_ = worksAudit.RegisterDailyPvUvHandler(service.Server(), model.NewDailyPvUvModel())
 
 	// 临时追加兼容注册到一个服务中
-
 	// 审核配置
 	_ = auditConf.RegisterAuditConfHandler(service.Server(), model2.NewAuditConfModel())
 	// user
