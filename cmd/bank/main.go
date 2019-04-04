@@ -5,7 +5,7 @@ import (
 	"github.com/micro/go-micro"
 	"github.com/micro/go-plugins/registry/etcdv3"
 	"go-micro/cmd/bank/model"
-	bank "go-micro/cmd/bank/proto"
+	"go-micro/cmd/bank/proto"
 	"log"
 	"time"
 )
