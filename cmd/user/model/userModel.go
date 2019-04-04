@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"go-micro/cmd/User/proto"
+	"go-micro/cmd/user/proto"
 	"go-micro/tool"
 	"strconv"
 	"time"
