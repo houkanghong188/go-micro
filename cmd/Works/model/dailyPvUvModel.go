@@ -30,13 +30,13 @@ func (m *DailyPvUvModel) Show(ctx context.Context, req *worksAudit.DailyRequest,
 	// 获取新的 连接（这里没必要获取，只不过是 举个例子）
 	query := tool.GetStatisticsConn()
 
-	if len(req.Uids) == 0 {
+	if len(req.WorksIds) == 0 {
 		return errors.New("empty rows")
 	}
 
 	works := rsp.Data
 
-	query.Table(m.TableName()).Where("uid in (?)", req.Uids).Find(&works)
+	query.Table(m.TableName()).Where("event_id in (?)", req.WorksIds).Find(&works)
 
 	rsp.Data = works
 
