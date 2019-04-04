@@ -2,7 +2,8 @@ syntax = "proto3";
 
 service User {
     rpc Show(Request) returns (Response) {}
-    rpc Index(Request) returns (Response) {}
+    rpc closure(Request) returns (Response) {}
+    rpc AuditLogDetail(Request) returns (AuditLogResponse) {}
 }
 
 message Request {
@@ -16,20 +17,37 @@ message Request {
     int32  is_delete = 6;
     int32  page = 7;
     int32  page_size = 8;
+    string reason = 12;
+    int32  status = 13;
+    string Works_id = 14;
+    repeated int32 ids = 10;
 }
 
 message Response {
     message Notify {
         int32   id = 9;
-        string name = 1;
-        string type = 2;
-        string value = 3;
-        string create_time = 4;
-        string update_time = 5;
-        int32 is_delete = 6;
+//        string name = 1;
+        string nickname = 2;
+        string Username = 3;
+        int32  UserBalance = 4;
+        int32  IosBalance = 5;
     }
     repeated Notify data = 12;
     int32 affectedRows = 11;
     int32 total = 13;
 }
 
+
+message AuditLogResponse {
+    message Notify {
+        int32   id = 1;
+        int32   uid = 2;
+        string   works_id = 3;
+        string   reason = 4;
+        string   type = 5;
+        string   create_time = 6;
+    }
+    repeated Notify data = 12;
+    int32 affectedRows = 11;
+    int32 total = 13;
+}

@@ -58,6 +58,21 @@ type works struct {
 	IsUsedLocalFonts  sql.NullInt64  `gorm:"column:is_used_local_fonts"`
 }
 
+type AuditLogModel struct {
+	Id         int32
+	WorksId    int32
+	Uid        int32
+	Reason     string
+	Type       string
+	CreateTime string
+	UpdateTime string
+}
+
+// TableName sets the insert table name for this struct type
+func (p *AuditLogModel) TableName() string {
+	return "platv5_works_audit_log"
+}
+
 // TableName sets the insert table name for this struct type
 func (p *works) TableName(uid int32) string {
 	return "platv5_works_" + strconv.Itoa(int(uid%16))
@@ -157,6 +172,16 @@ func (m *WorksAuditModel) WorksUpdate(ctx context.Context, req *worksAudit.Reque
 	works := works{}
 
 	query.Table(works.TableName(req.Uid)).Where("works_id = ?", req.WorksId).First(&works)
+
+	// 添加日志
+	var LogType string
+	if req.Status == 1 {
+		LogType = "fengjin"
+	} else {
+		LogType = "bufengjin"
+	}
+	auditLog := AuditLogModel{Uid: req.Uid, Reason: req.Reason, Type: LogType}
+	query.Create(&auditLog)
 
 	return nil
 }

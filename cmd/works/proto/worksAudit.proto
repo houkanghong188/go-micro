@@ -22,7 +22,8 @@ message Request {
     int32  id = 9;
     string works_id = 10;
     int32  status = 12;
-    int32 uid = 11;
+    int32  uid = 11;
+    string reason = 13;
 }
 
 message Response {
@@ -99,6 +100,7 @@ message DailyRequest {
     string works_id = 10;
     int32 status = 12;
     repeated int32 uids = 11;
+    repeated int32 WorksIds = 14;
 }
 
 message DailyResponse {
