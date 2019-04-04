@@ -31,7 +31,8 @@ func main() {
 	_ = worksAudit.RegisterWorksHandler(service.Server(), model.NewWorksModel())
 	_ = worksAudit.RegisterDailyPvUvHandler(service.Server(), model.NewDailyPvUvModel())
 
-	// 临时兼容注册到一个服务中
+	// 临时追加兼容注册到一个服务中
+
 	// 审核配置
 	_ = auditConf.RegisterAuditConfHandler(service.Server(), model2.NewAuditConfModel())
 	// user
