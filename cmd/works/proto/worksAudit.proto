@@ -27,12 +27,13 @@ message Request {
     repeated int32  AuditStatus = 14;
 }
 
+
 message Response {
     message Notify {
         int32   id = 9;
         int32   uid = 1;
         string  event_id = 2;
-        string  status = 7;
+        int32  status = 7;
         string  type = 3;
         string  create_time = 4;
         string  update_time = 5;

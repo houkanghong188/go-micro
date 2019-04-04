@@ -135,6 +135,14 @@ func (m *WorksAuditModel) Index(ctx context.Context, req *worksAudit.Request, rs
 		query = query.Where("type = ?", req.Type)
 	}
 
+	if req.Uid != 0 {
+		query = query.Where("uid = ?", req.Uid)
+	}
+
+	if req.WorksId != "" {
+		query = query.Where("event_id = ?", req.WorksId)
+	}
+
 	if len(req.AuditStatus) > 0 {
 		query = query.Where("status in (?)", req.AuditStatus)
 	}
