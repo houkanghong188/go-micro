@@ -10,6 +10,7 @@ It is generated from these files:
 It has these top-level messages:
 	Request
 	Response
+	History
 */
 package bank
 

@@ -6,5 +6,5 @@ import (
 )
 
 func main() {
-	fmt.Println(tool.Config["hosts"])
+	fmt.Println(tool.MysqlMaster.Error)
 }

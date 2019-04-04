@@ -47,6 +47,12 @@ func (m *BankModel) Show(ctx context.Context, req *bank.Request, rsp *bank.Respo
 		rsp.Card = m.Card
 		rsp.FianacialContact = m.FinancialContact
 		rsp.Tel = m.Tel
+
+		var history []*bank.History
+		mysql.Table("platv5_website_bank_history").Where("bank_id = ?", m.Id).Find(&history)
+
+		rsp.History = history
+
 		return nil
 	}
 

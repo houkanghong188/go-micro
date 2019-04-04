@@ -18,4 +18,13 @@ message Response {
     string card = 5;
     string tel = 6;
     string fianacialContact = 7;
+    repeated history history = 8;
+}
+
+message history{
+    int32 id = 1;
+    int32 type = 2;
+    int32 transactionMoney = 3;
+    string detail = 4;
+    int32 afterTransactionAmount = 5;
 }
