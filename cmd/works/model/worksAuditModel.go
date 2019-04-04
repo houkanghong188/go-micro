@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"go-micro/cmd/Works/proto"
+	"go-micro/cmd/works/proto"
 	"go-micro/tool"
 	"strconv"
 	"time"

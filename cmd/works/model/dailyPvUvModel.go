@@ -3,7 +3,7 @@ package model
 import (
 	"context"
 	"errors"
-	"go-micro/cmd/Works/proto"
+	"go-micro/cmd/works/proto"
 	"go-micro/tool"
 )
 

@@ -4,10 +4,11 @@ import (
 	"github.com/micro/go-grpc"
 	"github.com/micro/go-micro"
 	"github.com/micro/go-plugins/registry/etcdv3"
-	"go-micro/cmd/Works/proto"
 	model2 "go-micro/cmd/auditConf/model"
 	"go-micro/cmd/auditConf/proto"
 	"go-micro/cmd/works/model"
+	"go-micro/cmd/works/proto"
+	"go-micro/cmd/works/proto/witness"
 	"log"
 	"time"
 )
@@ -29,6 +30,7 @@ func main() {
 	_ = worksAudit.RegisterDailyPvUvHandler(service.Server(), model.NewDailyPvUvModel())
 	// 临时兼容注册到一个服务中
 	_ = auditConf.RegisterAuditConfHandler(service.Server(), model2.NewAuditConfModel())
+	_ = witness.RegisterWitnessesHandler(service.Server(), model.NewWorksWitnessesModel())
 
 	if err := service.Run(); err != nil {
 		log.Fatal(err)

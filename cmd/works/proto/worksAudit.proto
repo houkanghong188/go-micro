@@ -121,5 +121,3 @@ message DailyResponse {
     int32 affectedRows = 11;
     int32 total = 13;
 }
-
-
