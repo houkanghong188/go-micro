@@ -28,7 +28,8 @@ var (
 	MysqlSlaverMaxIdleConns = 2
 	MysqlSlaverMaxOpenConns = 3
 
-	MysqlStatisticsDns          = "testgroup:testgroupM1@(rm-2zezj9n2lv83nl8x4o.mysql.rds.aliyuncs.com:3306)/makaplatv4?charset=utf8&parseTime=True&loc=Local"
+	// mysqlData
+	MysqlStatisticsDns          = "testgroup:testgroupM1@(rm-2zezj9n2lv83nl8x4o.mysql.rds.aliyuncs.com:3306)/makadata?charset=utf8&parseTime=True&loc=Local"
 	MysqlStatisticsMaxIdleConns = 2
 	MysqlStatisticsMaxOpenConns = 3
 
