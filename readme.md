@@ -25,3 +25,10 @@
     HOST: http://localhost:8080/rpc
     HEADER: Content-Type: application/json
     BODY: {"service": "go.micro.srv.bank", "method": "Bank.Show", "request": {"id":1}}
+
+
+### 生成gen -gorm
+    1. 安装gen
+     
+    2. 命令运行
+    gen --connstr "testgroup:testgroupM1@(rm-2zezj9n2lv83nl8x4o.mysql.rds.aliyuncs.com:3306)/makaplatv4?charset=utf8&parseTime=True&loc=Local" --table platv5_audit_conf --gorm
