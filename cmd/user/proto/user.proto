@@ -4,6 +4,7 @@ service User {
     rpc Show(Request) returns (Response) {}
     rpc closure(Request) returns (Response) {}
     rpc AuditLogDetail(Request) returns (AuditLogResponse) {}
+    rpc AuditLogShow(Request) returns (LogShowResponse) {}
 }
 
 message Request {
@@ -32,6 +33,20 @@ message Response {
         int32  IosBalance = 5;
     }
     repeated Notify data = 12;
+    int32 affectedRows = 11;
+    int32 total = 13;
+}
+
+message LogShowResponse {
+    message Notify {
+        int32   id = 1;
+        int32   uid = 2;
+        string   works_id = 3;
+        string   reason = 4;
+        string   type = 5;
+        string   create_time = 6;
+    }
+    Notify data = 12;
     int32 affectedRows = 11;
     int32 total = 13;
 }

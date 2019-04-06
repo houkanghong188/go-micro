@@ -81,7 +81,6 @@ message WorksResponse {
     int32 total = 13;
 }
 
-
 service DailyPvUv {
     rpc Show(DailyRequest) returns (DailyResponse) {}
 }

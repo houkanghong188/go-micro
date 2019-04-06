@@ -179,3 +179,35 @@ func (m *UserModel) AuditLogDetail(ctx context.Context, req *user.Request, rsp *
 	rsp.Data = data
 	return nil
 }
+
+func (m *UserModel) AuditLogShow(ctx context.Context, req *user.Request, rsp *user.LogShowResponse) error {
+
+	// 获取新的 连接（这里没必要获取，只不过是 举个例子）
+	query := tool.GetMasterConn()
+
+	if req.Uid <= 0 && req.WorksId == "" {
+		return errors.New("empty rows")
+	}
+
+	// 获取新的 连接（这里没必要获取，只不过是 举个例子）
+
+	data := user.LogShowResponse_Notify{}
+
+	auditLog := AuditLogModel{}
+
+	if req.Uid != 0 {
+		query = query.Where("uid = ?", req.Uid)
+	}
+	if req.WorksId != "" {
+		query = query.Where("works_id = ?", req.WorksId)
+	}
+
+	if req.Type != "" {
+		query = query.Where("type = ?", req.Type)
+	}
+
+	query.Table(auditLog.TableName()).Order("id desc").First(&data)
+
+	rsp.Data = &data
+	return nil
+}

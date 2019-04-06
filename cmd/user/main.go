@@ -4,8 +4,8 @@ import (
 	"github.com/micro/go-grpc"
 	"github.com/micro/go-micro"
 	"github.com/micro/go-plugins/registry/etcdv3"
-	"go-micro/cmd/User/proto"
 	"go-micro/cmd/user/model"
+	"go-micro/cmd/user/proto"
 	"log"
 	"time"
 )

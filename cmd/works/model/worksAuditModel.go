@@ -139,7 +139,6 @@ func (m *WorksAuditModel) Index(ctx context.Context, req *worksAudit.Request, rs
 		query = query.Where("uid = ?", req.Uid)
 	}
 
-	fmt.Println(req.WorksId)
 	if req.WorksId != "" {
 		query = query.Where("event_id = ?", req.WorksId)
 	}

@@ -10,6 +10,7 @@ It is generated from these files:
 It has these top-level messages:
 	Request
 	Response
+	LogShowResponse
 	AuditLogResponse
 */
 package user
@@ -46,6 +47,7 @@ type UserService interface {
 	Show(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error)
 	Closure(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error)
 	AuditLogDetail(ctx context.Context, in *Request, opts ...client.CallOption) (*AuditLogResponse, error)
+	AuditLogShow(ctx context.Context, in *Request, opts ...client.CallOption) (*LogShowResponse, error)
 }
 
 type userService struct {
@@ -96,12 +98,23 @@ func (c *userService) AuditLogDetail(ctx context.Context, in *Request, opts ...c
 	return out, nil
 }
 
+func (c *userService) AuditLogShow(ctx context.Context, in *Request, opts ...client.CallOption) (*LogShowResponse, error) {
+	req := c.c.NewRequest(c.name, "User.AuditLogShow", in)
+	out := new(LogShowResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for User service
 
 type UserHandler interface {
 	Show(context.Context, *Request, *Response) error
 	Closure(context.Context, *Request, *Response) error
 	AuditLogDetail(context.Context, *Request, *AuditLogResponse) error
+	AuditLogShow(context.Context, *Request, *LogShowResponse) error
 }
 
 func RegisterUserHandler(s server.Server, hdlr UserHandler, opts ...server.HandlerOption) error {
@@ -109,6 +122,7 @@ func RegisterUserHandler(s server.Server, hdlr UserHandler, opts ...server.Handl
 		Show(ctx context.Context, in *Request, out *Response) error
 		Closure(ctx context.Context, in *Request, out *Response) error
 		AuditLogDetail(ctx context.Context, in *Request, out *AuditLogResponse) error
+		AuditLogShow(ctx context.Context, in *Request, out *LogShowResponse) error
 	}
 	type User struct {
 		user
@@ -131,4 +145,8 @@ func (h *userHandler) Closure(ctx context.Context, in *Request, out *Response) e
 
 func (h *userHandler) AuditLogDetail(ctx context.Context, in *Request, out *AuditLogResponse) error {
 	return h.UserHandler.AuditLogDetail(ctx, in, out)
+}
+
+func (h *userHandler) AuditLogShow(ctx context.Context, in *Request, out *LogShowResponse) error {
+	return h.UserHandler.AuditLogShow(ctx, in, out)
 }
