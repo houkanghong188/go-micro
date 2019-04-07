@@ -11,6 +11,9 @@ It has these top-level messages:
 	Request
 	Response
 	WorksResponse
+	AuditBracket
+	WorksBracket
+	DailyPvUvBracket
 	DailyRequest
 	DailyResponse
 */
@@ -60,7 +63,7 @@ func NewWorksAuditService(name string, c client.Client) WorksAuditService {
 		c = client.NewClient()
 	}
 	if len(name) == 0 {
-		name = "worksaudit"
+		name = "worksAudit"
 	}
 	return &worksAuditService{
 		c:    c,
@@ -151,7 +154,7 @@ func NewWorksService(name string, c client.Client) WorksService {
 		c = client.NewClient()
 	}
 	if len(name) == 0 {
-		name = "works"
+		name = "worksAudit"
 	}
 	return &worksService{
 		c:    c,
@@ -210,7 +213,7 @@ func NewDailyPvUvService(name string, c client.Client) DailyPvUvService {
 		c = client.NewClient()
 	}
 	if len(name) == 0 {
-		name = "dailypvuv"
+		name = "worksAudit"
 	}
 	return &dailyPvUvService{
 		c:    c,

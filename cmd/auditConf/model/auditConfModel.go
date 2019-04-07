@@ -35,7 +35,7 @@ func (m *AuditConfModel) Show(ctx context.Context, req *auditConf.Request, rsp *
 		query = query.Where("type = ?", req.Type)
 	}
 
-	data := []*auditConf.Response_Notify{}
+	data := []*auditConf.AuditConfBracket{}
 
 	query.Table(m.TableName()).Find(&data)
 
@@ -83,7 +83,7 @@ func (m *AuditConfModel) Index(ctx context.Context, req *auditConf.Request, rsp 
 		return errors.New("empty rows")
 	}
 
-	data := []*auditConf.Response_Notify{}
+	data := []*auditConf.AuditConfBracket{}
 
 	query.Table(m.TableName()).Limit(req.PageSize).Offset(req.PageSize * req.Page).Find(&data)
 

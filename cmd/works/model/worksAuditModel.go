@@ -95,7 +95,7 @@ func (m *WorksAuditModel) Show(ctx context.Context, req *worksAudit.Request, rsp
 	// 获取新的 连接（这里没必要获取，只不过是 举个例子）
 	query := tool.GetMasterConn()
 
-	data := []*worksAudit.Response_Notify{}
+	data := []*worksAudit.AuditBracket{}
 
 	query.Table(m.TableName()).Find(&data)
 
@@ -149,7 +149,7 @@ func (m *WorksAuditModel) Index(ctx context.Context, req *worksAudit.Request, rs
 
 	query.Table(m.TableName()).Count(&rsp.Total)
 
-	data := []*worksAudit.Response_Notify{}
+	data := []*worksAudit.AuditBracket{}
 
 	query.Table(m.TableName()).Limit(req.PageSize).Offset(req.PageSize * req.Page).Find(&data)
 
@@ -189,9 +189,9 @@ func (m *WorksAuditModel) WorksUpdate(ctx context.Context, req *worksAudit.Reque
 	// 添加日志
 	var LogType string
 	if req.Status == 1 {
-		LogType = "fengjin"
+		LogType = "block"
 	} else {
-		LogType = "bufengjin"
+		LogType = "deblock"
 	}
 	auditLog := AuditLogModel{Uid: req.Uid, Reason: req.Reason, Type: LogType}
 	query.Create(&auditLog)
@@ -208,7 +208,7 @@ func (m *works) WorksDetail(ctx context.Context, req *worksAudit.Request, rsp *w
 		return errors.New("empty rows")
 	}
 
-	work := []*worksAudit.WorksResponse_Notify{}
+	work := []*worksAudit.WorksBracket{}
 
 	query.Table(m.TableName(req.Uid)).Where("works_id = ?", req.WorksId).First(&work)
 

@@ -97,13 +97,11 @@ func (m *UserModel) Show(ctx context.Context, req *user.Request, rsp *user.Respo
 	// 获取新的 连接（这里没必要获取，只不过是 举个例子）
 	query := tool.GetMasterConn()
 
-	data := []*user.Response_Notify{}
+	data := []*user.UserBracket{}
 
 	if req.Uid != 0 {
 		query = query.Where("id = ?", req.Uid)
 	}
-
-	//query.Debug().Table(m.TableName()).Find(&ok)
 
 	query.Table("platv4_user").First(&data)
 
@@ -138,76 +136,15 @@ func (m *UserModel) Closure(ctx context.Context, req *user.Request, rsp *user.Re
 	// 添加日志
 	var LogType string
 	if req.Status == 1 {
-		LogType = "fengjin"
+		LogType = "block"
 	} else {
-		LogType = "bufengjin"
+		LogType = "deblock"
 	}
 	auditLog := AuditLogModel{Uid: req.Uid, Reason: req.Reason, Type: LogType}
 	query.Create(&auditLog)
 
-	return nil
-}
+	// 设置redis
+	//redis, _ := tool.GetRedis()
 
-func (m *UserModel) AuditLogDetail(ctx context.Context, req *user.Request, rsp *user.AuditLogResponse) error {
-
-	// 获取新的 连接（这里没必要获取，只不过是 举个例子）
-	query := tool.GetMasterConn()
-
-	if req.Uid <= 0 && req.WorksId == "" {
-		return errors.New("empty rows")
-	}
-
-	// 获取新的 连接（这里没必要获取，只不过是 举个例子）
-
-	data := []*user.AuditLogResponse_Notify{}
-
-	auditLog := AuditLogModel{}
-
-	if req.Uid != 0 {
-		query = query.Where("uid = ?", req.Uid)
-	}
-	if req.WorksId != "" {
-		query = query.Where("works_id = ?", req.WorksId)
-	}
-
-	if req.Type != "" {
-		query = query.Where("type = ?", req.Type)
-	}
-
-	query.Table(auditLog.TableName()).Find(&data)
-
-	rsp.Data = data
-	return nil
-}
-
-func (m *UserModel) AuditLogShow(ctx context.Context, req *user.Request, rsp *user.LogShowResponse) error {
-
-	// 获取新的 连接（这里没必要获取，只不过是 举个例子）
-	query := tool.GetMasterConn()
-
-	if req.Uid <= 0 && req.WorksId == "" {
-		return errors.New("empty rows")
-	}
-
-	// 获取新的 连接（这里没必要获取，只不过是 举个例子）
-
-	data := user.LogShowResponse_Notify{}
-
-	auditLog := AuditLogModel{}
-
-	if req.Uid != 0 {
-		query = query.Where("uid = ?", req.Uid)
-	}
-	if req.WorksId != "" {
-		query = query.Where("works_id = ?", req.WorksId)
-	}
-
-	if req.Type != "" {
-		query = query.Where("type = ?", req.Type)
-	}
-
-	query.Table(auditLog.TableName()).Order("id desc").First(&data)
-
-	rsp.Data = &data
 	return nil
 }

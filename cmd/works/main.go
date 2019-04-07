@@ -5,10 +5,10 @@ import (
 	"github.com/micro/go-micro"
 	"github.com/micro/go-plugins/registry/etcdv3"
 	model2 "go-micro/cmd/auditConf/model"
-	model3 "go-micro/cmd/user/model"
-
 	"go-micro/cmd/auditConf/proto"
+	model3 "go-micro/cmd/user/model"
 	"go-micro/cmd/user/proto"
+	"go-micro/cmd/user/proto/auditLog"
 	"go-micro/cmd/works/model"
 	"go-micro/cmd/works/proto"
 	"go-micro/cmd/works/proto/witness"
@@ -38,6 +38,7 @@ func main() {
 	_ = witness.RegisterWitnessesHandler(service.Server(), model.NewWorksWitnessesModel())
 	// user
 	_ = user.RegisterUserHandler(service.Server(), model3.NewUserModel())
+	_ = AuditLog.RegisterAuditLogHandler(service.Server(), model3.NewAuditLogModel())
 
 	if err := service.Run(); err != nil {
 		log.Fatal(err)
