@@ -3,7 +3,12 @@ package model
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
+	"fmt"
+	"go-micro/cmd/works/model"
+	//"encoding/json"
 	"errors"
+	//"fmt"
 	"go-micro/cmd/user/proto"
 	"go-micro/tool"
 	"strconv"
@@ -70,13 +75,17 @@ type UserModel struct {
 
 type AuditLogModel struct {
 	Id         int32
-	WorksId    int32
+	WorksId    string
 	Uid        int32
 	Reason     string
 	Type       string
 	CreateTime string
 	UpdateTime string
 }
+
+//type works struct {
+//	WorksId string
+//}
 
 // TableName sets the insert table name for this struct type
 func (p *AuditLogModel) TableName() string {
@@ -110,7 +119,6 @@ func (m *UserModel) Show(ctx context.Context, req *user.Request, rsp *user.Respo
 }
 
 func (m *UserModel) Closure(ctx context.Context, req *user.Request, rsp *user.Response) error {
-
 	// 获取新的 连接（这里没必要获取，只不过是 举个例子）
 	query := tool.GetMasterConn()
 
@@ -135,6 +143,7 @@ func (m *UserModel) Closure(ctx context.Context, req *user.Request, rsp *user.Re
 
 	// 添加日志
 	var LogType string
+	//c, _ := tool.GetRedis()
 	if req.Status == 1 {
 		LogType = "block"
 	} else {
@@ -144,7 +153,73 @@ func (m *UserModel) Closure(ctx context.Context, req *user.Request, rsp *user.Re
 	query.Create(&auditLog)
 
 	// 设置redis
-	//redis, _ := tool.GetRedis()
 
 	return nil
+
 }
+
+func blockWorks(uid int) {
+	worksIds := model.Works{}
+	query := tool.GetMasterConn()
+	query.Table("platv5_works_11").Select("works_id").Where("uid = ?", uid).Scan(&worksIds)
+	//设置对应信息
+	b, err := json.Marshal(worksIds)
+	if err != nil {
+		fmt.Println("jinlai")
+	}
+
+	c, _ := tool.GetRedis()
+	_, berr := c.Do("hset", "user_closure", uid, b)
+	if berr != nil {
+		fmt.Println(berr)
+	}
+}
+
+func deBlock(uid int) {
+	worksIds := model.Works{}
+	query := tool.GetMasterConn()
+	query.Table("platv5_works_11").Select("works_id").Where("uid = ?", uid).Scan(&worksIds)
+	//设置对应信息
+	b, err := json.Marshal(worksIds)
+	if err != nil {
+		fmt.Println("jinlai")
+	}
+
+	c, _ := tool.GetRedis()
+	_, berr := c.Do("hset", "uid_keys_12", "helloworld", b)
+	if berr != nil {
+		fmt.Println(berr)
+	}
+}
+
+//// 设置redis
+//c, _ := tool.GetRedis()
+//
+//redisWorksIds, err :=  redis.String(c.Do("hget","uid_keys_12","helloworld"))
+//data := []works{}
+//json.Unmarshal([]byte(redisWorksIds),&data)
+//for _,v := range data{
+//if !(v.WorksId == "") {
+//work := worksAudit.WorksBracket{}
+//search := tool.GetMasterConn()
+//search.Table("platv5_works_11").Select("works_id").Where("works_id = ?",v.WorksId).First(&work)
+//fmt.Println(&work)
+//}
+//}
+//
+//// works
+//// 获取新的 连接（这里没必要获取，只不过是 举个例子）
+//query := tool.GetMasterConn()
+//worksIds := []works{}
+//query.Table("platv5_works_11").Select("works_id").Where("uid = ?",2440683).Scan(&worksIds)
+//
+//b, err := json.Marshal(worksIds)
+//if(err != nil){
+//fmt.Println("jinlai");
+//}
+//_, berr := c.Do("hset","uid_keys_12", "helloworld", b)
+//if(err != nil){
+//fmt.Println(berr)
+//}
+//
+//return nil

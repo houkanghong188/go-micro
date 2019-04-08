@@ -9,6 +9,7 @@ It is generated from these files:
 
 It has these top-level messages:
 	Request
+	ShowResponse
 	Response
 	WorksResponse
 	AuditBracket
@@ -48,7 +49,7 @@ var _ server.Option
 // Client API for WorksAudit service
 
 type WorksAuditService interface {
-	Show(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error)
+	Show(ctx context.Context, in *Request, opts ...client.CallOption) (*ShowResponse, error)
 	Index(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error)
 	WorksUpdate(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error)
 }
@@ -71,9 +72,9 @@ func NewWorksAuditService(name string, c client.Client) WorksAuditService {
 	}
 }
 
-func (c *worksAuditService) Show(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error) {
+func (c *worksAuditService) Show(ctx context.Context, in *Request, opts ...client.CallOption) (*ShowResponse, error) {
 	req := c.c.NewRequest(c.name, "WorksAudit.Show", in)
-	out := new(Response)
+	out := new(ShowResponse)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -104,14 +105,14 @@ func (c *worksAuditService) WorksUpdate(ctx context.Context, in *Request, opts .
 // Server API for WorksAudit service
 
 type WorksAuditHandler interface {
-	Show(context.Context, *Request, *Response) error
+	Show(context.Context, *Request, *ShowResponse) error
 	Index(context.Context, *Request, *Response) error
 	WorksUpdate(context.Context, *Request, *Response) error
 }
 
 func RegisterWorksAuditHandler(s server.Server, hdlr WorksAuditHandler, opts ...server.HandlerOption) error {
 	type worksAudit interface {
-		Show(ctx context.Context, in *Request, out *Response) error
+		Show(ctx context.Context, in *Request, out *ShowResponse) error
 		Index(ctx context.Context, in *Request, out *Response) error
 		WorksUpdate(ctx context.Context, in *Request, out *Response) error
 	}
@@ -126,7 +127,7 @@ type worksAuditHandler struct {
 	WorksAuditHandler
 }
 
-func (h *worksAuditHandler) Show(ctx context.Context, in *Request, out *Response) error {
+func (h *worksAuditHandler) Show(ctx context.Context, in *Request, out *ShowResponse) error {
 	return h.WorksAuditHandler.Show(ctx, in, out)
 }
 

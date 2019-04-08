@@ -33,7 +33,7 @@ func init() {
 }
 
 // todo 处理 err 事件
-func Get() (redis.Conn, error) {
+func GetRedis() (redis.Conn, error) {
 	conn := RedisPool.Get()
 	if conn.Err() != nil {
 		return nil, conn.Err()

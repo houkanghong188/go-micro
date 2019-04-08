@@ -26,7 +26,7 @@ var (
 	_ = sql.LevelDefault
 )
 
-type works struct {
+type Works struct {
 	ID                int            `gorm:"column:id;primary_key"`
 	WorksID           string         `gorm:"column:works_id"`
 	UID               sql.NullInt64  `gorm:"column:uid"`
@@ -74,12 +74,12 @@ func (p *AuditLogModel) TableName() string {
 }
 
 // TableName sets the insert table name for this struct type
-func (p *works) TableName(uid int32) string {
+func (p *Works) TableName(uid int32) string {
 	return "platv5_works_" + strconv.Itoa(int(uid%16))
 }
 
-func NewWorksModel() *works {
-	return &works{}
+func NewWorksModel() *Works {
+	return &Works{}
 }
 
 func NewWorksAuditModel() *WorksAuditModel {
@@ -90,34 +90,31 @@ func (m *WorksAuditModel) TableName() string {
 	return "platv5_works_audit"
 }
 
-func (m *WorksAuditModel) Show(ctx context.Context, req *worksAudit.Request, rsp *worksAudit.Response) error {
+func (m *WorksAuditModel) Show(ctx context.Context, req *worksAudit.Request, rsp *worksAudit.ShowResponse) error {
 
 	// 获取新的 连接（这里没必要获取，只不过是 举个例子）
 	query := tool.GetMasterConn()
 
-	data := []*worksAudit.AuditBracket{}
+	data := worksAudit.AuditBracket{}
 
 	query.Table(m.TableName()).Find(&data)
 
-	for k, v := range data {
-		tableName := "platv5_works_" + strconv.Itoa(int(v.Uid%16))
-		work := works{}
-		query.Table(tableName).Where("works_id = ?", v.EventId).First(&work)
+	tableName := "platv5_works_" + strconv.Itoa(int(v.Uid%16))
+	work := Works{}
+	query.Table(tableName).Where("works_id = ?", v.EventId).First(&work)
 
-		fmt.Println(work)
+	fmt.Println(work)
 
-		fmt.Println(work == (works{}))
-		if work == (works{}) {
-			fmt.Println(work)
-			data[k].Content = " "
-			data[k].Title = " "
-		} else {
-			data[k].Title = work.Title
-			data[k].Content = work.Content
-		}
+	fmt.Println(work == (Works{}))
+	if work == (Works{}) {
+		data.Content = " "
+		data.Title = " "
+	} else {
+		data.Title = work.Title
+		data.Content = work.Content
 	}
 
-	rsp.Data = data
+	rsp.Data = &data
 
 	return nil
 }
@@ -156,10 +153,10 @@ func (m *WorksAuditModel) Index(ctx context.Context, req *worksAudit.Request, rs
 	newQuery := tool.GetMasterConn()
 	for k, v := range data {
 		tableName := "platv5_works_" + strconv.Itoa(int(v.Uid%16))
-		work := works{}
+		work := Works{}
 		newQuery.Table(tableName).Where("works_id = ?", v.EventId).First(&work)
 
-		if work == (works{}) {
+		if work == (Works{}) {
 			data[k].Content = " "
 			data[k].Title = " "
 		} else {
@@ -182,7 +179,7 @@ func (m *WorksAuditModel) WorksUpdate(ctx context.Context, req *worksAudit.Reque
 		return errors.New("empty rows works_id | uid")
 	}
 
-	works := works{}
+	works := Works{}
 
 	query.Table(works.TableName(req.Uid)).Where("works_id = ?", req.WorksId).First(&works)
 
@@ -199,7 +196,7 @@ func (m *WorksAuditModel) WorksUpdate(ctx context.Context, req *worksAudit.Reque
 	return nil
 }
 
-func (m *works) WorksDetail(ctx context.Context, req *worksAudit.Request, rsp *worksAudit.WorksResponse) error {
+func (m *Works) WorksDetail(ctx context.Context, req *worksAudit.Request, rsp *worksAudit.WorksResponse) error {
 
 	// 获取新的 连接（这里没必要获取，只不过是 举个例子）
 	query := tool.GetMasterConn()
