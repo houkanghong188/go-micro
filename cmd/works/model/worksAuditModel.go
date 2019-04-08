@@ -97,11 +97,19 @@ func (m *WorksAuditModel) Show(ctx context.Context, req *worksAudit.Request, rsp
 
 	data := worksAudit.AuditBracket{}
 
-	query.Table(m.TableName()).Find(&data)
+	if req.Uid != 0 {
+		query = query.Where("uid = ?", req.Uid)
+	}
 
-	tableName := "platv5_works_" + strconv.Itoa(int(v.Uid%16))
+	if req.WorksId != "" {
+		query = query.Where("event_id = ?", req.WorksId)
+	}
+
+	query.Table(m.TableName()).First(&data)
+
+	tableName := "platv5_works_" + strconv.Itoa(int(data.Uid%16))
 	work := Works{}
-	query.Table(tableName).Where("works_id = ?", v.EventId).First(&work)
+	query.Table(tableName).Where("works_id = ?", data.EventId).First(&work)
 
 	fmt.Println(work)
 
