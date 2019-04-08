@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"fmt"
 	"go-micro/cmd/works/proto"
 	"go-micro/tool"
 	"strconv"
@@ -109,11 +108,9 @@ func (m *WorksAuditModel) Show(ctx context.Context, req *worksAudit.Request, rsp
 
 	tableName := "platv5_works_" + strconv.Itoa(int(data.Uid%16))
 	work := Works{}
-	query.Table(tableName).Where("works_id = ?", data.EventId).First(&work)
+	newQuery := tool.GetMasterConn()
+	newQuery.Table(tableName).Where("works_id = ?", data.EventId).First(&work)
 
-	fmt.Println(work)
-
-	fmt.Println(work == (Works{}))
 	if work == (Works{}) {
 		data.Content = " "
 		data.Title = " "
