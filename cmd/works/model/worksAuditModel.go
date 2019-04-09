@@ -104,9 +104,6 @@ func (m *WorksAuditModel) Show(ctx context.Context, req *worksAudit.Request, rsp
 		work := works{}
 		query.Table(tableName).Where("works_id = ?", v.EventId).First(&work)
 
-		fmt.Println(work)
-
-		fmt.Println(work == (works{}))
 		if work == (works{}) {
 			fmt.Println(work)
 			data[k].Content = " "

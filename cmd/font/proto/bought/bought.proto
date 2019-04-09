@@ -1,0 +1,44 @@
+syntax = "proto3";
+package bought;
+
+service UserBoughtFont {
+    rpc Index(IndexRequest) returns (IndexResponse) {}
+    rpc Show(IndexRequest) returns (IndexResponse) {}
+    rpc Update(IndexRequest) returns (IndexResponse) {}
+    rpc Delete(IndexRequest) returns (IndexResponse) {}
+    rpc Create(IndexRequest) returns (IndexResponse) {}
+}
+
+message IndexRequest {
+    int32  page = 1;
+    int32  pageSize = 2;
+    int32   id = 4;
+    repeated Ids Ids = 5;
+    int32 status = 6;
+}
+
+message Ids {
+    int32 id = 1;
+}
+
+message IndexResponse {
+    repeated Font data = 12;
+    int32 affectedRows = 11;
+    int32 total = 13;
+}
+
+message Font {
+    string   style = 2;
+    string   name = 3;
+    string    source = 4;
+    string    link  = 5;
+    int32    personPrice = 6;
+    int32    enterPrisePrice = 7;
+    int32    enableLease = 8;
+    string   fontIdNo = 9;
+    string   previewTextUrl = 10;
+    string   previewImg = 11;
+    string   orderPreviewImg = 12;
+}
+
+

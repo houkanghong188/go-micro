@@ -1,7 +1,6 @@
 package tool
 
 import (
-	"fmt"
 	"github.com/gomodule/redigo/redis"
 	"go-micro/config"
 	"time"
@@ -10,7 +9,6 @@ import (
 var RedisPool *redis.Pool
 
 func init() {
-	fmt.Println("redis pool init")
 	RedisPool = &redis.Pool{
 		MaxIdle:     config.RedisMaxIdle,
 		MaxActive:   config.RedisMaxActive,
