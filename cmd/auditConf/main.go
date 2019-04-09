@@ -24,7 +24,6 @@ func main() {
 	service.Init()
 
 	_ = auditConf.RegisterAuditConfHandler(service.Server(), model.NewAuditConfModel())
-	bank.RegisterBankHandler(service.Server(), model2.NewBankModel())
 
 	if err := service.Run(); err != nil {
 		log.Fatal(err)
