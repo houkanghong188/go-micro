@@ -32,6 +32,7 @@ message UserBracket{
     string Username = 3;
     int32  UserBalance = 4;
     int32  IosBalance = 5;
+    int32  Status = 6;
 }
 
 message Response {
