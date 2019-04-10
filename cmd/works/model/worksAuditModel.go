@@ -206,11 +206,11 @@ func (m *WorksAuditModel) AuditUpdate(ctx context.Context, req *worksAudit.Reque
 	// 获取新的 连接（这里没必要获取，只不过是 举个例子）
 	query := tool.GetMasterConn()
 
-	if req.Id == 0 {
-		return errors.New("empty rows id")
+	if req.WorksId == "" || req.Uid == 0 {
+		return errors.New("empty rows")
 	}
 
-	query.Table(m.TableName()).Where("id = ?", req.Id).Update("status", req.Status)
+	query.Table(m.TableName()).Where("uid = ?", req.Id).Where("event_id = ?", req.WorksId).Update("status", req.Status)
 
 	// 添加日志
 	return nil

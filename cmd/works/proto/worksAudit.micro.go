@@ -17,6 +17,7 @@ It has these top-level messages:
 	DailyPvUvBracket
 	DailyRequest
 	DailyResponse
+	DailyIndexResponse
 */
 package worksAudit
 
@@ -219,6 +220,7 @@ func (h *worksHandler) WorksDetail(ctx context.Context, in *Request, out *WorksR
 
 type DailyPvUvService interface {
 	Show(ctx context.Context, in *DailyRequest, opts ...client.CallOption) (*DailyResponse, error)
+	Index(ctx context.Context, in *DailyRequest, opts ...client.CallOption) (*DailyIndexResponse, error)
 }
 
 type dailyPvUvService struct {
@@ -249,15 +251,27 @@ func (c *dailyPvUvService) Show(ctx context.Context, in *DailyRequest, opts ...c
 	return out, nil
 }
 
+func (c *dailyPvUvService) Index(ctx context.Context, in *DailyRequest, opts ...client.CallOption) (*DailyIndexResponse, error) {
+	req := c.c.NewRequest(c.name, "DailyPvUv.Index", in)
+	out := new(DailyIndexResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for DailyPvUv service
 
 type DailyPvUvHandler interface {
 	Show(context.Context, *DailyRequest, *DailyResponse) error
+	Index(context.Context, *DailyRequest, *DailyIndexResponse) error
 }
 
 func RegisterDailyPvUvHandler(s server.Server, hdlr DailyPvUvHandler, opts ...server.HandlerOption) error {
 	type dailyPvUv interface {
 		Show(ctx context.Context, in *DailyRequest, out *DailyResponse) error
+		Index(ctx context.Context, in *DailyRequest, out *DailyIndexResponse) error
 	}
 	type DailyPvUv struct {
 		dailyPvUv
@@ -272,4 +286,8 @@ type dailyPvUvHandler struct {
 
 func (h *dailyPvUvHandler) Show(ctx context.Context, in *DailyRequest, out *DailyResponse) error {
 	return h.DailyPvUvHandler.Show(ctx, in, out)
+}
+
+func (h *dailyPvUvHandler) Index(ctx context.Context, in *DailyRequest, out *DailyIndexResponse) error {
+	return h.DailyPvUvHandler.Index(ctx, in, out)
 }
