@@ -12,6 +12,7 @@ It has these top-level messages:
 	ShowResponse
 	Response
 	WorksResponse
+	WorksDetailResponse
 	AuditBracket
 	WorksBracket
 	DailyPvUvBracket
@@ -160,7 +161,7 @@ func (h *worksAuditHandler) AuditUpdate(ctx context.Context, in *Request, out *R
 // Client API for Works service
 
 type WorksService interface {
-	WorksDetail(ctx context.Context, in *Request, opts ...client.CallOption) (*WorksResponse, error)
+	WorksDetail(ctx context.Context, in *Request, opts ...client.CallOption) (*WorksDetailResponse, error)
 }
 
 type worksService struct {
@@ -181,9 +182,9 @@ func NewWorksService(name string, c client.Client) WorksService {
 	}
 }
 
-func (c *worksService) WorksDetail(ctx context.Context, in *Request, opts ...client.CallOption) (*WorksResponse, error) {
+func (c *worksService) WorksDetail(ctx context.Context, in *Request, opts ...client.CallOption) (*WorksDetailResponse, error) {
 	req := c.c.NewRequest(c.name, "Works.WorksDetail", in)
-	out := new(WorksResponse)
+	out := new(WorksDetailResponse)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -194,12 +195,12 @@ func (c *worksService) WorksDetail(ctx context.Context, in *Request, opts ...cli
 // Server API for Works service
 
 type WorksHandler interface {
-	WorksDetail(context.Context, *Request, *WorksResponse) error
+	WorksDetail(context.Context, *Request, *WorksDetailResponse) error
 }
 
 func RegisterWorksHandler(s server.Server, hdlr WorksHandler, opts ...server.HandlerOption) error {
 	type works interface {
-		WorksDetail(ctx context.Context, in *Request, out *WorksResponse) error
+		WorksDetail(ctx context.Context, in *Request, out *WorksDetailResponse) error
 	}
 	type Works struct {
 		works
@@ -212,7 +213,7 @@ type worksHandler struct {
 	WorksHandler
 }
 
-func (h *worksHandler) WorksDetail(ctx context.Context, in *Request, out *WorksResponse) error {
+func (h *worksHandler) WorksDetail(ctx context.Context, in *Request, out *WorksDetailResponse) error {
 	return h.WorksHandler.WorksDetail(ctx, in, out)
 }
 

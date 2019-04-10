@@ -51,7 +51,6 @@ func (m *DailyPvUvModel) Show(ctx context.Context, req *worksAudit.DailyRequest,
 	if len(req.WorksId) == 0 {
 		return errors.New("empty rows")
 	}
-
 	works := rsp.Data
 
 	query.Table(m.TableName()).Where("event_id = ?", req.WorksId).Order("id desc").First(&works)

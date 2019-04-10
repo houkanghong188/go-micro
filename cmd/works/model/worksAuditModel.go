@@ -216,7 +216,7 @@ func (m *WorksAuditModel) AuditUpdate(ctx context.Context, req *worksAudit.Reque
 	return nil
 }
 
-func (m *Works) WorksDetail(ctx context.Context, req *worksAudit.Request, rsp *worksAudit.WorksResponse) error {
+func (m *Works) WorksDetail(ctx context.Context, req *worksAudit.Request, rsp *worksAudit.WorksDetailResponse) error {
 
 	// 获取新的 连接（这里没必要获取，只不过是 举个例子）
 	query := tool.GetMasterConn()
@@ -225,11 +225,11 @@ func (m *Works) WorksDetail(ctx context.Context, req *worksAudit.Request, rsp *w
 		return errors.New("empty rows")
 	}
 
-	work := []*worksAudit.WorksBracket{}
+	work := worksAudit.WorksBracket{}
 
 	query.Table(m.TableName(req.Uid)).Where("works_id = ?", req.WorksId).First(&work)
 
-	rsp.Data = work
+	rsp.Data = &work
 
 	return nil
 }

@@ -10,7 +10,7 @@ service WorksAudit {
 }
 
 service Works{
-    rpc WorksDetail(Request) returns (WorksResponse) {}
+    rpc WorksDetail(Request) returns (WorksDetailResponse) {}
 }
 
 message Request {
@@ -44,6 +44,12 @@ message Response {
 
 message WorksResponse {
     repeated WorksBracket data = 12;
+    int32 affectedRows = 11;
+    int32 total = 13;
+}
+
+message WorksDetailResponse {
+    WorksBracket data = 12;
     int32 affectedRows = 11;
     int32 total = 13;
 }
