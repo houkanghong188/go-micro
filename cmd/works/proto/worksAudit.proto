@@ -96,6 +96,7 @@ message WorksBracket{
     int32   IsDelete = 27;
     int32   IsBoughtTemplate = 28;
     int32   IsUsedLocalFonts = 29;
+    int32   Status = 30;
 }
 
 
