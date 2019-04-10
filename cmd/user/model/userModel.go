@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"github.com/gomodule/redigo/redis"
 	"go-micro/cmd/works/model"
 	//"encoding/json"
 	"errors"
@@ -143,23 +144,23 @@ func (m *UserModel) Closure(ctx context.Context, req *user.Request, rsp *user.Re
 
 	// 添加日志
 	var LogType string
-	//c, _ := tool.GetRedis()
 	if req.Status == 1 {
 		LogType = "block"
+		blockWorks(req.Uid)
 	} else {
 		LogType = "deblock"
+		deBlockWorks(req.Uid)
 	}
 	auditLog := AuditLogModel{Uid: req.Uid, Reason: req.Reason, Type: LogType}
 	query.Create(&auditLog)
 
 	// 设置redis
-
 	return nil
-
 }
 
-func blockWorks(uid int) {
-	worksIds := model.Works{}
+func blockWorks(uid int32) {
+	worksIds := []model.Works{}
+	//worksIds := []string{}
 	query := tool.GetMasterConn()
 	query.Table("platv5_works_11").Select("works_id").Where("uid = ?", uid).Scan(&worksIds)
 	//设置对应信息
@@ -167,7 +168,6 @@ func blockWorks(uid int) {
 	if err != nil {
 		fmt.Println("jinlai")
 	}
-
 	c, _ := tool.GetRedis()
 	_, berr := c.Do("hset", "user_closure", uid, b)
 	if berr != nil {
@@ -175,51 +175,22 @@ func blockWorks(uid int) {
 	}
 }
 
-func deBlock(uid int) {
-	worksIds := model.Works{}
-	query := tool.GetMasterConn()
-	query.Table("platv5_works_11").Select("works_id").Where("uid = ?", uid).Scan(&worksIds)
-	//设置对应信息
-	b, err := json.Marshal(worksIds)
-	if err != nil {
-		fmt.Println("jinlai")
-	}
-
+func deBlockWorks(uid int32) {
 	c, _ := tool.GetRedis()
-	_, berr := c.Do("hset", "uid_keys_12", "helloworld", b)
-	if berr != nil {
-		fmt.Println(berr)
+
+	redisWorksIds, err := redis.String(c.Do("hget", "user_closure", uid))
+	if err == nil {
+		return
+	}
+	data := []model.Works{}
+	json.Unmarshal([]byte(redisWorksIds), &data)
+	fmt.Println(data)
+
+	for _, v := range data {
+		if !(v.WorksID == "") {
+			continue
+		}
+		newQuery := tool.GetMasterConn()
+		newQuery.Table(v.TableName(v.UID)).Where("works_id = ?", v.WorksID).Update("status", 0)
 	}
 }
-
-//// 设置redis
-//c, _ := tool.GetRedis()
-//
-//redisWorksIds, err :=  redis.String(c.Do("hget","uid_keys_12","helloworld"))
-//data := []works{}
-//json.Unmarshal([]byte(redisWorksIds),&data)
-//for _,v := range data{
-//if !(v.WorksId == "") {
-//work := worksAudit.WorksBracket{}
-//search := tool.GetMasterConn()
-//search.Table("platv5_works_11").Select("works_id").Where("works_id = ?",v.WorksId).First(&work)
-//fmt.Println(&work)
-//}
-//}
-//
-//// works
-//// 获取新的 连接（这里没必要获取，只不过是 举个例子）
-//query := tool.GetMasterConn()
-//worksIds := []works{}
-//query.Table("platv5_works_11").Select("works_id").Where("uid = ?",2440683).Scan(&worksIds)
-//
-//b, err := json.Marshal(worksIds)
-//if(err != nil){
-//fmt.Println("jinlai");
-//}
-//_, berr := c.Do("hset","uid_keys_12", "helloworld", b)
-//if(err != nil){
-//fmt.Println(berr)
-//}
-//
-//return nil

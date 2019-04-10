@@ -19,16 +19,14 @@ message WitnessesResponse {
 }
 
 message Witness {
-    int32   id = 1;
-    int32   ui = 2;
-    string  eventId = 3;
-    int32   isLiteEvent = 4;
+    int32     id = 1;
+    int32     uid = 2;
+    string    eventId = 3;
+    int32     isLiteEvent = 4;
     string    title  = 5;
-    string   reason = 6;
-    int64    ip = 7;
-    string   uidEventId = 8;
-    string   create_time = 9;
-    string   update_time = 10;
+    string    reason = 6;
+    int64     ip = 7;
+    string    uidEventId = 8;
+    string    create_time = 9;
+    string    update_time = 10;
 }
-
-

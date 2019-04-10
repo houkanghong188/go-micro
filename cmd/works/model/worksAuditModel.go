@@ -28,7 +28,7 @@ var (
 type Works struct {
 	ID                int            `gorm:"column:id;primary_key"`
 	WorksID           string         `gorm:"column:works_id"`
-	UID               sql.NullInt64  `gorm:"column:uid"`
+	UID               int32          `gorm:"column:uid"`
 	Title             string         `gorm:"column:title"`
 	Content           string         `gorm:"column:content"`
 	Comment           string         `gorm:"column:comment"`
@@ -59,7 +59,7 @@ type Works struct {
 
 type AuditLogModel struct {
 	Id         int32
-	WorksId    int32
+	WorksId    string
 	Uid        int32
 	Reason     string
 	Type       string
@@ -186,7 +186,7 @@ func (m *WorksAuditModel) WorksUpdate(ctx context.Context, req *worksAudit.Reque
 
 	works := Works{}
 
-	query.Table(works.TableName(req.Uid)).Where("works_id = ?", req.WorksId).First(&works)
+	query.Table(works.TableName(req.Uid)).Where("works_id = ?", req.WorksId).Update("status", req.Status)
 
 	// 添加日志
 	var LogType string
@@ -195,9 +195,24 @@ func (m *WorksAuditModel) WorksUpdate(ctx context.Context, req *worksAudit.Reque
 	} else {
 		LogType = "deblock"
 	}
-	auditLog := AuditLogModel{Uid: req.Uid, Reason: req.Reason, Type: LogType}
+	auditLog := AuditLogModel{Uid: req.Uid, WorksId: req.WorksId, Reason: req.Reason, Type: LogType}
 	query.Create(&auditLog)
 
+	return nil
+}
+
+func (m *WorksAuditModel) AuditUpdate(ctx context.Context, req *worksAudit.Request, rsp *worksAudit.Response) error {
+
+	// 获取新的 连接（这里没必要获取，只不过是 举个例子）
+	query := tool.GetMasterConn()
+
+	if req.Id == 0 {
+		return errors.New("empty rows id")
+	}
+
+	query.Table(m.TableName()).Where("id = ?", req.Id).Update("status", req.Status)
+
+	// 添加日志
 	return nil
 }
 

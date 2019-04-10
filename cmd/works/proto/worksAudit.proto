@@ -6,6 +6,7 @@ service WorksAudit {
     rpc Show(Request) returns (ShowResponse) {}
     rpc Index(Request) returns (Response) {}
     rpc WorksUpdate(Request) returns (Response) {}
+    rpc AuditUpdate(Request) returns (Response) {}
 }
 
 service Works{

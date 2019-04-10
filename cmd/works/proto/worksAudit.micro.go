@@ -52,6 +52,7 @@ type WorksAuditService interface {
 	Show(ctx context.Context, in *Request, opts ...client.CallOption) (*ShowResponse, error)
 	Index(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error)
 	WorksUpdate(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error)
+	AuditUpdate(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error)
 }
 
 type worksAuditService struct {
@@ -102,12 +103,23 @@ func (c *worksAuditService) WorksUpdate(ctx context.Context, in *Request, opts .
 	return out, nil
 }
 
+func (c *worksAuditService) AuditUpdate(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error) {
+	req := c.c.NewRequest(c.name, "WorksAudit.AuditUpdate", in)
+	out := new(Response)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for WorksAudit service
 
 type WorksAuditHandler interface {
 	Show(context.Context, *Request, *ShowResponse) error
 	Index(context.Context, *Request, *Response) error
 	WorksUpdate(context.Context, *Request, *Response) error
+	AuditUpdate(context.Context, *Request, *Response) error
 }
 
 func RegisterWorksAuditHandler(s server.Server, hdlr WorksAuditHandler, opts ...server.HandlerOption) error {
@@ -115,6 +127,7 @@ func RegisterWorksAuditHandler(s server.Server, hdlr WorksAuditHandler, opts ...
 		Show(ctx context.Context, in *Request, out *ShowResponse) error
 		Index(ctx context.Context, in *Request, out *Response) error
 		WorksUpdate(ctx context.Context, in *Request, out *Response) error
+		AuditUpdate(ctx context.Context, in *Request, out *Response) error
 	}
 	type WorksAudit struct {
 		worksAudit
@@ -137,6 +150,10 @@ func (h *worksAuditHandler) Index(ctx context.Context, in *Request, out *Respons
 
 func (h *worksAuditHandler) WorksUpdate(ctx context.Context, in *Request, out *Response) error {
 	return h.WorksAuditHandler.WorksUpdate(ctx, in, out)
+}
+
+func (h *worksAuditHandler) AuditUpdate(ctx context.Context, in *Request, out *Response) error {
+	return h.WorksAuditHandler.AuditUpdate(ctx, in, out)
 }
 
 // Client API for Works service

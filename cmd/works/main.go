@@ -11,7 +11,7 @@ import (
 	"go-micro/cmd/user/proto/auditLog"
 	"go-micro/cmd/works/model"
 	"go-micro/cmd/works/proto"
-	"go-micro/cmd/works/proto/witness"
+	witness "go-micro/cmd/works/proto/witness"
 	"log"
 	"time"
 )
