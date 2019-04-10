@@ -88,14 +88,14 @@ message WorksBracket{
     int32    page_height = 17;
     string   other_property = 18;
     int32    SuiteAppType = 21;
-    int32    CreateDevice = 22;
-    int32    UpdateDevice = 23;
+    string    CreateDevice = 22;
+    string    UpdateDevice = 23;
     int32    CreateSite = 24;
-    int32    CreateTime = 25;
-    int32    UpdateTime = 26;
-    string   IsDelete = 27;
-    string   IsBoughtTemplate = 28;
-    string   IsUsedLocalFonts = 29;
+    string    CreateTime = 25;
+    string    UpdateTime = 26;
+    int32   IsDelete = 27;
+    int32   IsBoughtTemplate = 28;
+    int32   IsUsedLocalFonts = 29;
 }
 
 
@@ -103,7 +103,6 @@ service DailyPvUv {
     rpc Show(DailyRequest) returns (DailyResponse) {}
     rpc Index(DailyRequest) returns (DailyIndexResponse) {}
 }
-
 
 message DailyPvUvBracket{
     int32   id = 1;

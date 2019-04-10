@@ -119,7 +119,9 @@ func (m *WorksAuditModel) Show(ctx context.Context, req *worksAudit.Request, rsp
 		data.Content = work.Content
 	}
 
-	rsp.Data = &data
+	if data.Uid != 0 {
+		rsp.Data = &data
+	}
 
 	return nil
 }
@@ -170,8 +172,6 @@ func (m *WorksAuditModel) Index(ctx context.Context, req *worksAudit.Request, rs
 		}
 	}
 
-	rsp.Data = data
-
 	return nil
 }
 
@@ -210,7 +210,7 @@ func (m *WorksAuditModel) AuditUpdate(ctx context.Context, req *worksAudit.Reque
 		return errors.New("empty rows")
 	}
 
-	query.Table(m.TableName()).Where("uid = ?", req.Id).Where("event_id = ?", req.WorksId).Update("status", req.Status)
+	query.Table(m.TableName()).Where("uid = ?", req.Uid).Where("event_id = ?", req.WorksId).Update("status", req.Status)
 
 	// 添加日志
 	return nil
@@ -225,11 +225,13 @@ func (m *Works) WorksDetail(ctx context.Context, req *worksAudit.Request, rsp *w
 		return errors.New("empty rows")
 	}
 
-	work := worksAudit.WorksBracket{}
+	works := worksAudit.WorksBracket{}
 
-	query.Table(m.TableName(req.Uid)).Where("works_id = ?", req.WorksId).First(&work)
+	query.Table(m.TableName(req.Uid)).Where("works_id = ?", req.WorksId).First(&works)
 
-	rsp.Data = &work
+	if works.Uid != 0 {
+		rsp.Data = &works
+	}
 
 	return nil
 }
