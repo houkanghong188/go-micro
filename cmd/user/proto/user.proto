@@ -28,11 +28,11 @@ message Request {
 
 message UserBracket{
     int32   id = 9;
-    string nickname = 2;
-    string Username = 3;
-    int32  UserBalance = 4;
-    int32  IosBalance = 5;
-    int32  Status = 6;
+    string  nickname = 2;
+    string  username = 3;
+    int32  userBalance = 4;
+    int32  iosBalance = 5;
+    int32  status = 7;
 }
 
 message Response {
