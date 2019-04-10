@@ -76,27 +76,27 @@ message WorksBracket{
     string   comment = 6;
     string   thumb = 7;
     string   firstImg = 8;
-    string   version = 9;
-    string   editorVersion = 10;
+    int32    version = 9;
+    int32    editorVersion = 10;
     string   template_id = 11;
     string   parent_event_id = 12;
     int32    identity = 13;
     int32    category = 14;
     int32    size_id = 15;
     int32    secondary_category = 16;
-    int32    page_width = 20;
     int32    page_height = 17;
     string   other_property = 18;
-    int32    SuiteAppType = 21;
-    string    CreateDevice = 22;
-    string    UpdateDevice = 23;
-    int32    CreateSite = 24;
-    string    CreateTime = 25;
-    string    UpdateTime = 26;
-    int32   IsDelete = 27;
-    int32   IsBoughtTemplate = 28;
-    int32   IsUsedLocalFonts = 29;
-    int32   Status = 30;
+    int32    page_width = 20;
+    int32    suiteAppType = 21;
+    string    createDevice = 22;
+    string    updateDevice = 23;
+    int32     createSite = 24;
+    string    createTime = 25;
+    string    updateTime = 26;
+    int32   isDelete = 27;
+    int32   isBoughtTemplate = 28;
+    int32   isUsedLocalFonts = 29;
+    int32   status = 30;
 }
 
 
