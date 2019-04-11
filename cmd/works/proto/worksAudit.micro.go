@@ -12,11 +12,13 @@ It has these top-level messages:
 	ShowResponse
 	Response
 	WorksResponse
+	WorksDetailResponse
 	AuditBracket
 	WorksBracket
 	DailyPvUvBracket
 	DailyRequest
 	DailyResponse
+	DailyIndexResponse
 */
 package worksAudit
 
@@ -52,6 +54,7 @@ type WorksAuditService interface {
 	Show(ctx context.Context, in *Request, opts ...client.CallOption) (*ShowResponse, error)
 	Index(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error)
 	WorksUpdate(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error)
+	AuditUpdate(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error)
 }
 
 type worksAuditService struct {
@@ -102,12 +105,23 @@ func (c *worksAuditService) WorksUpdate(ctx context.Context, in *Request, opts .
 	return out, nil
 }
 
+func (c *worksAuditService) AuditUpdate(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error) {
+	req := c.c.NewRequest(c.name, "WorksAudit.AuditUpdate", in)
+	out := new(Response)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for WorksAudit service
 
 type WorksAuditHandler interface {
 	Show(context.Context, *Request, *ShowResponse) error
 	Index(context.Context, *Request, *Response) error
 	WorksUpdate(context.Context, *Request, *Response) error
+	AuditUpdate(context.Context, *Request, *Response) error
 }
 
 func RegisterWorksAuditHandler(s server.Server, hdlr WorksAuditHandler, opts ...server.HandlerOption) error {
@@ -115,6 +129,7 @@ func RegisterWorksAuditHandler(s server.Server, hdlr WorksAuditHandler, opts ...
 		Show(ctx context.Context, in *Request, out *ShowResponse) error
 		Index(ctx context.Context, in *Request, out *Response) error
 		WorksUpdate(ctx context.Context, in *Request, out *Response) error
+		AuditUpdate(ctx context.Context, in *Request, out *Response) error
 	}
 	type WorksAudit struct {
 		worksAudit
@@ -139,10 +154,14 @@ func (h *worksAuditHandler) WorksUpdate(ctx context.Context, in *Request, out *R
 	return h.WorksAuditHandler.WorksUpdate(ctx, in, out)
 }
 
+func (h *worksAuditHandler) AuditUpdate(ctx context.Context, in *Request, out *Response) error {
+	return h.WorksAuditHandler.AuditUpdate(ctx, in, out)
+}
+
 // Client API for Works service
 
 type WorksService interface {
-	WorksDetail(ctx context.Context, in *Request, opts ...client.CallOption) (*WorksResponse, error)
+	WorksDetail(ctx context.Context, in *Request, opts ...client.CallOption) (*WorksDetailResponse, error)
 }
 
 type worksService struct {
@@ -163,9 +182,9 @@ func NewWorksService(name string, c client.Client) WorksService {
 	}
 }
 
-func (c *worksService) WorksDetail(ctx context.Context, in *Request, opts ...client.CallOption) (*WorksResponse, error) {
+func (c *worksService) WorksDetail(ctx context.Context, in *Request, opts ...client.CallOption) (*WorksDetailResponse, error) {
 	req := c.c.NewRequest(c.name, "Works.WorksDetail", in)
-	out := new(WorksResponse)
+	out := new(WorksDetailResponse)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -176,12 +195,12 @@ func (c *worksService) WorksDetail(ctx context.Context, in *Request, opts ...cli
 // Server API for Works service
 
 type WorksHandler interface {
-	WorksDetail(context.Context, *Request, *WorksResponse) error
+	WorksDetail(context.Context, *Request, *WorksDetailResponse) error
 }
 
 func RegisterWorksHandler(s server.Server, hdlr WorksHandler, opts ...server.HandlerOption) error {
 	type works interface {
-		WorksDetail(ctx context.Context, in *Request, out *WorksResponse) error
+		WorksDetail(ctx context.Context, in *Request, out *WorksDetailResponse) error
 	}
 	type Works struct {
 		works
@@ -194,7 +213,7 @@ type worksHandler struct {
 	WorksHandler
 }
 
-func (h *worksHandler) WorksDetail(ctx context.Context, in *Request, out *WorksResponse) error {
+func (h *worksHandler) WorksDetail(ctx context.Context, in *Request, out *WorksDetailResponse) error {
 	return h.WorksHandler.WorksDetail(ctx, in, out)
 }
 
@@ -202,6 +221,7 @@ func (h *worksHandler) WorksDetail(ctx context.Context, in *Request, out *WorksR
 
 type DailyPvUvService interface {
 	Show(ctx context.Context, in *DailyRequest, opts ...client.CallOption) (*DailyResponse, error)
+	Index(ctx context.Context, in *DailyRequest, opts ...client.CallOption) (*DailyIndexResponse, error)
 }
 
 type dailyPvUvService struct {
@@ -232,15 +252,27 @@ func (c *dailyPvUvService) Show(ctx context.Context, in *DailyRequest, opts ...c
 	return out, nil
 }
 
+func (c *dailyPvUvService) Index(ctx context.Context, in *DailyRequest, opts ...client.CallOption) (*DailyIndexResponse, error) {
+	req := c.c.NewRequest(c.name, "DailyPvUv.Index", in)
+	out := new(DailyIndexResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for DailyPvUv service
 
 type DailyPvUvHandler interface {
 	Show(context.Context, *DailyRequest, *DailyResponse) error
+	Index(context.Context, *DailyRequest, *DailyIndexResponse) error
 }
 
 func RegisterDailyPvUvHandler(s server.Server, hdlr DailyPvUvHandler, opts ...server.HandlerOption) error {
 	type dailyPvUv interface {
 		Show(ctx context.Context, in *DailyRequest, out *DailyResponse) error
+		Index(ctx context.Context, in *DailyRequest, out *DailyIndexResponse) error
 	}
 	type DailyPvUv struct {
 		dailyPvUv
@@ -255,4 +287,8 @@ type dailyPvUvHandler struct {
 
 func (h *dailyPvUvHandler) Show(ctx context.Context, in *DailyRequest, out *DailyResponse) error {
 	return h.DailyPvUvHandler.Show(ctx, in, out)
+}
+
+func (h *dailyPvUvHandler) Index(ctx context.Context, in *DailyRequest, out *DailyIndexResponse) error {
+	return h.DailyPvUvHandler.Index(ctx, in, out)
 }

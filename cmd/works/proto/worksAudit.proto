@@ -6,10 +6,11 @@ service WorksAudit {
     rpc Show(Request) returns (ShowResponse) {}
     rpc Index(Request) returns (Response) {}
     rpc WorksUpdate(Request) returns (Response) {}
+    rpc AuditUpdate(Request) returns (Response) {}
 }
 
 service Works{
-    rpc WorksDetail(Request) returns (WorksResponse) {}
+    rpc WorksDetail(Request) returns (WorksDetailResponse) {}
 }
 
 message Request {
@@ -47,6 +48,12 @@ message WorksResponse {
     int32 total = 13;
 }
 
+message WorksDetailResponse {
+    WorksBracket data = 12;
+    int32 affectedRows = 11;
+    int32 total = 13;
+}
+
 message AuditBracket{
     int32   id = 9;
     int32   uid = 1;
@@ -69,33 +76,34 @@ message WorksBracket{
     string   comment = 6;
     string   thumb = 7;
     string   firstImg = 8;
-    string   version = 9;
-    string   editorVersion = 10;
+    int32    version = 9;
+    int32    editorVersion = 10;
     string   template_id = 11;
     string   parent_event_id = 12;
     int32    identity = 13;
     int32    category = 14;
     int32    size_id = 15;
     int32    secondary_category = 16;
-    int32    page_width = 20;
     int32    page_height = 17;
     string   other_property = 18;
-    int32    SuiteAppType = 21;
-    int32    CreateDevice = 22;
-    int32    UpdateDevice = 23;
-    int32    CreateSite = 24;
-    int32    CreateTime = 25;
-    int32    UpdateTime = 26;
-    string   IsDelete = 27;
-    string   IsBoughtTemplate = 28;
-    string   IsUsedLocalFonts = 29;
+    int32    page_width = 20;
+    int32    suite_app_type = 21;
+    string    create_device = 22;
+    string    update_device = 23;
+    int32     create_site = 24;
+    string    create_time = 25;
+    string    update_time = 26;
+    int32   is_delete = 27;
+    int32   is_bought_template = 28;
+    int32   is_used_local_fonts = 29;
+    int32   status = 30;
 }
 
 
 service DailyPvUv {
     rpc Show(DailyRequest) returns (DailyResponse) {}
+    rpc Index(DailyRequest) returns (DailyIndexResponse) {}
 }
-
 
 message DailyPvUvBracket{
     int32   id = 1;
@@ -130,6 +138,12 @@ message DailyRequest {
 }
 
 message DailyResponse {
+    DailyPvUvBracket data = 12;
+    int32 affectedRows = 11;
+    int32 total = 13;
+}
+
+message DailyIndexResponse {
     repeated DailyPvUvBracket data = 12;
     int32 affectedRows = 11;
     int32 total = 13;

@@ -28,7 +28,7 @@ var (
 type Works struct {
 	ID                int            `gorm:"column:id;primary_key"`
 	WorksID           string         `gorm:"column:works_id"`
-	UID               sql.NullInt64  `gorm:"column:uid"`
+	UID               int32          `gorm:"column:uid"`
 	Title             string         `gorm:"column:title"`
 	Content           string         `gorm:"column:content"`
 	Comment           string         `gorm:"column:comment"`
@@ -59,7 +59,7 @@ type Works struct {
 
 type AuditLogModel struct {
 	Id         int32
-	WorksId    int32
+	WorksId    string
 	Uid        int32
 	Reason     string
 	Type       string
@@ -93,6 +93,7 @@ func (m *WorksAuditModel) Show(ctx context.Context, req *worksAudit.Request, rsp
 
 	// 获取新的 连接（这里没必要获取，只不过是 举个例子）
 	query := tool.GetMasterConn()
+
 	data := worksAudit.AuditBracket{}
 
 	if req.Uid != 0 {
@@ -118,12 +119,12 @@ func (m *WorksAuditModel) Show(ctx context.Context, req *worksAudit.Request, rsp
 		data.Content = work.Content
 	}
 
-	rsp.Data = &data
+	if data.Uid != 0 {
+		rsp.Data = &data
+	}
 
 	return nil
 }
-
-
 
 func (m *WorksAuditModel) Index(ctx context.Context, req *worksAudit.Request, rsp *worksAudit.Response) error {
 
@@ -152,7 +153,7 @@ func (m *WorksAuditModel) Index(ctx context.Context, req *worksAudit.Request, rs
 
 	query.Table(m.TableName()).Count(&rsp.Total)
 
-	var data []*worksAudit.AuditBracket
+	data := []*worksAudit.AuditBracket{}
 
 	query.Table(m.TableName()).Limit(req.PageSize).Offset(req.PageSize * req.Page).Find(&data)
 
@@ -171,8 +172,6 @@ func (m *WorksAuditModel) Index(ctx context.Context, req *worksAudit.Request, rs
 		}
 	}
 
-	rsp.Data = data
-
 	return nil
 }
 
@@ -187,7 +186,7 @@ func (m *WorksAuditModel) WorksUpdate(ctx context.Context, req *worksAudit.Reque
 
 	works := Works{}
 
-	query.Table(works.TableName(req.Uid)).Where("works_id = ?", req.WorksId).First(&works)
+	query.Table(works.TableName(req.Uid)).Where("works_id = ?", req.WorksId).Update("status", req.Status)
 
 	// 添加日志
 	var LogType string
@@ -196,13 +195,13 @@ func (m *WorksAuditModel) WorksUpdate(ctx context.Context, req *worksAudit.Reque
 	} else {
 		LogType = "deblock"
 	}
-	auditLog := AuditLogModel{Uid: req.Uid, Reason: req.Reason, Type: LogType}
+	auditLog := AuditLogModel{Uid: req.Uid, WorksId: req.WorksId, Reason: req.Reason, Type: LogType}
 	query.Create(&auditLog)
 
 	return nil
 }
 
-func (m *Works) WorksDetail(ctx context.Context, req *worksAudit.Request, rsp *worksAudit.WorksResponse) error {
+func (m *WorksAuditModel) AuditUpdate(ctx context.Context, req *worksAudit.Request, rsp *worksAudit.Response) error {
 
 	// 获取新的 连接（这里没必要获取，只不过是 举个例子）
 	query := tool.GetMasterConn()
@@ -211,11 +210,28 @@ func (m *Works) WorksDetail(ctx context.Context, req *worksAudit.Request, rsp *w
 		return errors.New("empty rows")
 	}
 
-	var work []*worksAudit.WorksBracket
+	query.Table(m.TableName()).Where("uid = ?", req.Uid).Where("event_id = ?", req.WorksId).Update("status", req.Status)
 
-	query.Table(m.TableName(req.Uid)).Where("works_id = ?", req.WorksId).First(&work)
+	// 添加日志
+	return nil
+}
 
-	rsp.Data = work
+func (m *Works) WorksDetail(ctx context.Context, req *worksAudit.Request, rsp *worksAudit.WorksDetailResponse) error {
+
+	// 获取新的 连接（这里没必要获取，只不过是 举个例子）
+	query := tool.GetMasterConn()
+
+	if req.WorksId == "" || req.Uid == 0 {
+		return errors.New("empty rows")
+	}
+
+	works := worksAudit.WorksBracket{}
+
+	query.Table(m.TableName(req.Uid)).Where("works_id = ?", req.WorksId).First(&works)
+
+	if works.Uid != 0 {
+		rsp.Data = &works
+	}
 
 	return nil
 }
