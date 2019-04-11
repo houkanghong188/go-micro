@@ -1,0 +1,40 @@
+syntax = "proto3";
+package font;
+
+service Fonts {
+    rpc Index(IndexRequest) returns (IndexResponse) {}
+}
+
+message IndexRequest {
+    int32  page = 1;
+    int32  pageSize = 2;
+    repeated Ids Ids = 3;
+    int32 status = 4;
+}
+
+message Ids {
+    int32 id = 1;
+}
+
+message IndexResponse {
+    repeated Font data = 12;
+    int32 affectedRows = 11;
+    int32 total = 13;
+}
+
+message Font {
+    int32    uid = 1;
+    string   style = 2;
+    string   name = 3;
+    string    source = 4;
+    string    link  = 5;
+    int32    personPrice = 6;
+    int32    enterPrisePrice = 7;
+    int32    enableLease = 8;
+    string   fontIdNo = 9;
+    string   previewTextUrl = 10;
+    string   previewImg = 11;
+    string   orderPreviewImg = 12;
+}
+
+
