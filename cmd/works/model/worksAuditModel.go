@@ -93,7 +93,6 @@ func (m *WorksAuditModel) Show(ctx context.Context, req *worksAudit.Request, rsp
 
 	// 获取新的 连接（这里没必要获取，只不过是 举个例子）
 	query := tool.GetMasterConn()
-
 	data := worksAudit.AuditBracket{}
 
 	if req.Uid != 0 {
@@ -124,6 +123,8 @@ func (m *WorksAuditModel) Show(ctx context.Context, req *worksAudit.Request, rsp
 	return nil
 }
 
+
+
 func (m *WorksAuditModel) Index(ctx context.Context, req *worksAudit.Request, rsp *worksAudit.Response) error {
 
 	// 获取新的 连接（这里没必要获取，只不过是 举个例子）
@@ -151,7 +152,7 @@ func (m *WorksAuditModel) Index(ctx context.Context, req *worksAudit.Request, rs
 
 	query.Table(m.TableName()).Count(&rsp.Total)
 
-	data := []*worksAudit.AuditBracket{}
+	var data []*worksAudit.AuditBracket
 
 	query.Table(m.TableName()).Limit(req.PageSize).Offset(req.PageSize * req.Page).Find(&data)
 
@@ -210,7 +211,7 @@ func (m *Works) WorksDetail(ctx context.Context, req *worksAudit.Request, rsp *w
 		return errors.New("empty rows")
 	}
 
-	work := []*worksAudit.WorksBracket{}
+	var work []*worksAudit.WorksBracket
 
 	query.Table(m.TableName(req.Uid)).Where("works_id = ?", req.WorksId).First(&work)
 
