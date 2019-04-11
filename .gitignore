@@ -5,3 +5,4 @@ config/*
 ./micro
 micro
 default.etcd/*
+./default.etcdk
