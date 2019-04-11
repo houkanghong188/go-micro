@@ -51,7 +51,7 @@ type Works struct {
 	UpdateDevice      string         `gorm:"column:update_device"`
 	CreateSite        sql.NullInt64  `gorm:"column:create_site"`
 	CreateTime        time.Time      `gorm:"column:create_time"`
-	UpdateTime        time.Time      `gorm:"column:update_time"`
+	UpdateTime        string         `gorm:"column:update_time"`
 	IsDelete          sql.NullInt64  `gorm:"column:is_delete"`
 	IsBoughtTemplate  sql.NullInt64  `gorm:"column:is_bought_template"`
 	IsUsedLocalFonts  sql.NullInt64  `gorm:"column:is_used_local_fonts"`
@@ -114,9 +114,12 @@ func (m *WorksAuditModel) Show(ctx context.Context, req *worksAudit.Request, rsp
 	if work == (Works{}) {
 		data.Content = " "
 		data.Title = " "
+		data.UpdateTime = " "
+
 	} else {
 		data.Title = work.Title
 		data.Content = work.Content
+		data.UpdateTime = work.UpdateTime
 	}
 
 	if data.Uid != 0 {
@@ -166,9 +169,12 @@ func (m *WorksAuditModel) Index(ctx context.Context, req *worksAudit.Request, rs
 		if work == (Works{}) {
 			data[k].Content = " "
 			data[k].Title = " "
+			data[k].UpdateTime = work.UpdateTime
+
 		} else {
 			data[k].Title = work.Title
 			data[k].Content = work.Content
+			data[k].UpdateTime = work.UpdateTime
 		}
 	}
 
