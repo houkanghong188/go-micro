@@ -3,6 +3,7 @@ package model
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"go-micro/cmd/user/proto/auditSafetyLog"
 	"go-micro/tool"
 	"time"
@@ -32,6 +33,10 @@ func (m *AuditSafetyLogModel) Index(ctx context.Context, req *auditSafetyLog.Req
 
 	// 获取新的 连接（这里没必要获取，只不过是 举个例子）
 	query := tool.GetMasterConn()
+
+	if req.Offset == 0 {
+		return errors.New("empty rows")
+	}
 
 	if req.Uid != 0 {
 		query = query.Where("uid = ?", req.Uid)

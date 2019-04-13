@@ -130,9 +130,7 @@ func (m *UserModel) Closure(ctx context.Context, req *user.Request, rsp *user.Re
 
 	var User = UserModel{}
 	query.Where("id = ?", req.Uid).First(&User)
-	User.Status = req.Status
-	query.Table(User.TableName()).Where("id = ?", req.Uid).Updates(&User)
-	query.Debug().Table(User.TableName()).Where("id = ?", req.Uid).Updates(&User)
+	query.Table(User.TableName()).Where("id = ?", req.Uid).Update("status", req.Status)
 
 	// 添加日志
 	var LogType string
@@ -175,7 +173,6 @@ func blockWorks(uid int32) {
 		}
 		newQuery := tool.GetMasterConn()
 		newQuery.Table(v.TableName(v.UID)).Where("works_id = ?", v.WorksID).Update("status", -3)
-		newQuery.Debug().Table(v.TableName(v.UID)).Where("works_id = ?", v.WorksID).Update("status", -3)
 	}
 }
 
