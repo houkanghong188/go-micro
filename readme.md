@@ -1,5 +1,9 @@
 ### etcdv3 安装
 
+### mac install protoc
+    brew install protoc-gen-go
+    go get -d -u github.com/golang/protobuf/protoc-gen-go
+
 ### install micro工具
     go install github.com/micro/micro
     如果是 报错包不存在，则可以使用下列命令可构建 

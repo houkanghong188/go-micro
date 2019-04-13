@@ -14,6 +14,7 @@ func init() {
 	var err error
 	// 主库
 	MysqlMaster, err = gorm.Open("mysql", config.MysqlMasterDns)
+	MysqlMaster.LogMode(config.MasterLogSql)
 	if err != nil {
 		panic(err)
 	}
@@ -25,6 +26,7 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
+	MysqlSlaver.LogMode(config.SlaverLogSql)
 
 	MysqlSlaver.DB().SetMaxIdleConns(config.MysqlSlaverMaxIdleConns)
 	MysqlSlaver.DB().SetMaxOpenConns(config.MysqlSlaverMaxOpenConns)
@@ -34,6 +36,7 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
+	MysqlStatistics.LogMode(config.StatisticsLogSql)
 	MysqlStatistics.DB().SetMaxIdleConns(config.MysqlMasterMaxIdleConns)
 	MysqlStatistics.DB().SetMaxOpenConns(config.MysqlMasterMaxOpenConns)
 }

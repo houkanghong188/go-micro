@@ -1,0 +1,19 @@
+syntax = "proto3";
+package templateStore;
+
+service TemplateStoreService{
+    rpc Index(Request) returns(Response);
+}
+
+message Request{
+    repeated string templateId = 1;
+}
+
+message Response{
+    repeated Template templates = 1;
+}
+
+message Template{
+    int32 id = 1;
+    string templateId = 2;
+}

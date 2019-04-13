@@ -1,0 +1,41 @@
+syntax = "proto3";
+package marketContentConf;
+
+service MarketContentConf{
+    rpc Index(Request) returns(Response);
+}
+
+message Request{
+    repeated string mark = 1;
+}
+
+
+message Response{
+    repeated ContentConf contentConf = 1;
+}
+
+message ContentConf{
+    int32 id = 1;
+    string title = 2;
+    string type  = 3;
+    string description = 4;
+    int32 sort =5;
+    int32 parentId = 6;
+    string mark = 7;
+    int32 relevantCategory = 8;
+    repeated ContentRecommend recommend = 9;
+}
+
+message ContentRecommend{
+    int32 id = 1;
+    string title = 2;
+    int32 contentId = 3;
+    int32 sort = 4;
+    string nexusTemplateId = 5;
+    string nexusCruxWords = 6;
+    string nexusScene = 7;
+    string nexusIndustry = 8;
+    string nexusColor = 9;
+    string nexusStyle = 10;
+    int32 relevantCategory = 11;
+}
