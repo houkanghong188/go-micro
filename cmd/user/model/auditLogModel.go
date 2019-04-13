@@ -13,13 +13,17 @@ func NewAuditLogModel() *AuditLogModel {
 
 // TableName sets the insert table name for this struct type
 
-func (m *AuditLogModel) AuditLogDetail(ctx context.Context, req *AuditLog.Request, rsp *AuditLog.AuditLogResponse) error {
+func (m *AuditLogModel) AuditLogIndex(ctx context.Context, req *AuditLog.Request, rsp *AuditLog.AuditLogResponse) error {
 
 	// 获取新的 连接（这里没必要获取，只不过是 举个例子）
 	query := tool.GetMasterConn()
 
 	if req.Uid <= 0 && req.WorksId == "" {
 		return errors.New("empty rows")
+	}
+
+	if req.Limit == 0 {
+		return errors.New("empty rows limit")
 	}
 
 	// 获取新的 连接（这里没必要获取，只不过是 举个例子）
@@ -39,7 +43,8 @@ func (m *AuditLogModel) AuditLogDetail(ctx context.Context, req *AuditLog.Reques
 		query = query.Where("type = ?", req.Type)
 	}
 
-	query.Table(auditLog.TableName()).Find(&data)
+	query.Table(m.TableName()).Count(&rsp.Total)
+	query.Table(auditLog.TableName()).Limit(req.Limit).Offset(req.Offset).Find(&data)
 
 	rsp.Data = data
 	return nil

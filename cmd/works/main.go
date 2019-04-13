@@ -9,6 +9,7 @@ import (
 	model3 "go-micro/cmd/user/model"
 	"go-micro/cmd/user/proto"
 	"go-micro/cmd/user/proto/auditLog"
+	"go-micro/cmd/user/proto/auditSafetyLog"
 	"go-micro/cmd/works/model"
 	"go-micro/cmd/works/proto"
 	witness "go-micro/cmd/works/proto/witness"
@@ -36,9 +37,11 @@ func main() {
 	// 审核配置
 	_ = auditConf.RegisterAuditConfHandler(service.Server(), model2.NewAuditConfModel())
 	_ = witness.RegisterWitnessesHandler(service.Server(), model.NewWorksWitnessesModel())
+
 	// user
 	_ = user.RegisterUserHandler(service.Server(), model3.NewUserModel())
 	_ = AuditLog.RegisterAuditLogHandler(service.Server(), model3.NewAuditLogModel())
+	_ = auditSafetyLog.RegisterAuditSafetyLogHandler(service.Server(), model3.NewAuditSafetyLogModel())
 
 	if err := service.Run(); err != nil {
 		log.Fatal(err)

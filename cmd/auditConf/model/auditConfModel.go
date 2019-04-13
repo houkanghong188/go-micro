@@ -79,13 +79,13 @@ func (m *AuditConfModel) Index(ctx context.Context, req *auditConf.Request, rsp 
 
 	query.Table(m.TableName()).Count(&rsp.Total)
 
-	if req.PageSize == 0 {
+	if req.Limit == 0 {
 		return errors.New("empty rows")
 	}
 
 	data := []*auditConf.AuditConfBracket{}
 
-	query.Table(m.TableName()).Limit(req.PageSize).Offset(req.PageSize * req.Page).Find(&data)
+	query.Table(m.TableName()).Limit(req.Limit).Offset(req.Offset).Find(&data)
 
 	rsp.Data = data
 
