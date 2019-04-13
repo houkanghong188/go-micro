@@ -241,3 +241,31 @@ func (m *Works) WorksDetail(ctx context.Context, req *worksAudit.Request, rsp *w
 
 	return nil
 }
+
+func (m *Works) WorksIndex(ctx context.Context, req *worksAudit.WorksIndexRequest, rsp *worksAudit.WorksIndexResponse) error {
+
+	// 获取新的 连接（这里没必要获取，只不过是 举个例子）
+	query := tool.GetMasterConn()
+
+	if req.Uid == 0 || req.Limit == 0 {
+		return errors.New("empty rows")
+	}
+
+	works := []*worksAudit.WorksBracket{}
+
+	if req.Uid != 0 {
+		query = query.Where("uid = ?", req.Uid)
+	}
+
+	if req.WorksId != "" {
+		query = query.Where("works_id = ?", req.WorksId)
+	}
+
+	query.Table(m.TableName(req.Uid)).Count(&rsp.Total)
+
+	query.Debug().Table(m.TableName(req.Uid)).Limit(req.Limit).Offset(req.Offset).Find(&works)
+
+	rsp.Data = works
+
+	return nil
+}

@@ -11,6 +11,15 @@ service WorksAudit {
 
 service Works{
     rpc WorksDetail(Request) returns (WorksDetailResponse) {}
+    rpc WorksIndex(WorksIndexRequest) returns (WorksIndexResponse) {}
+}
+
+message WorksIndexRequest {
+    int32    id = 1;
+    string   works_id = 2;
+    int32    uid = 5;
+    int32    limit = 6;
+    int32    offset = 7;
 }
 
 message Request {
@@ -30,19 +39,25 @@ message Request {
     repeated int32  AuditStatus = 14;
 }
 
-message ShowResponse {
-    AuditBracket data = 12;
-    int32 affectedRows = 11;
-    int32 total = 13;
-}
-
 message Response {
     repeated AuditBracket data = 12;
     int32 affectedRows = 11;
     int32 total = 13;
 }
 
+message ShowResponse {
+    AuditBracket data = 12;
+    int32 affectedRows = 11;
+    int32 total = 13;
+}
+
 message WorksResponse {
+    repeated WorksBracket data = 12;
+    int32 affectedRows = 11;
+    int32 total = 13;
+}
+
+message WorksIndexResponse {
     repeated WorksBracket data = 12;
     int32 affectedRows = 11;
     int32 total = 13;
