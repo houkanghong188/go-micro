@@ -44,7 +44,7 @@ var _ server.Option
 // Client API for AuditLog service
 
 type AuditLogService interface {
-	AuditLogDetail(ctx context.Context, in *Request, opts ...client.CallOption) (*AuditLogResponse, error)
+	AuditLogIndex(ctx context.Context, in *Request, opts ...client.CallOption) (*AuditLogResponse, error)
 	AuditLogShow(ctx context.Context, in *Request, opts ...client.CallOption) (*LogShowResponse, error)
 }
 
@@ -66,8 +66,8 @@ func NewAuditLogService(name string, c client.Client) AuditLogService {
 	}
 }
 
-func (c *auditLogService) AuditLogDetail(ctx context.Context, in *Request, opts ...client.CallOption) (*AuditLogResponse, error) {
-	req := c.c.NewRequest(c.name, "AuditLog.AuditLogDetail", in)
+func (c *auditLogService) AuditLogIndex(ctx context.Context, in *Request, opts ...client.CallOption) (*AuditLogResponse, error) {
+	req := c.c.NewRequest(c.name, "AuditLog.AuditLogIndex", in)
 	out := new(AuditLogResponse)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
@@ -89,13 +89,13 @@ func (c *auditLogService) AuditLogShow(ctx context.Context, in *Request, opts ..
 // Server API for AuditLog service
 
 type AuditLogHandler interface {
-	AuditLogDetail(context.Context, *Request, *AuditLogResponse) error
+	AuditLogIndex(context.Context, *Request, *AuditLogResponse) error
 	AuditLogShow(context.Context, *Request, *LogShowResponse) error
 }
 
 func RegisterAuditLogHandler(s server.Server, hdlr AuditLogHandler, opts ...server.HandlerOption) error {
 	type auditLog interface {
-		AuditLogDetail(ctx context.Context, in *Request, out *AuditLogResponse) error
+		AuditLogIndex(ctx context.Context, in *Request, out *AuditLogResponse) error
 		AuditLogShow(ctx context.Context, in *Request, out *LogShowResponse) error
 	}
 	type AuditLog struct {
@@ -109,8 +109,8 @@ type auditLogHandler struct {
 	AuditLogHandler
 }
 
-func (h *auditLogHandler) AuditLogDetail(ctx context.Context, in *Request, out *AuditLogResponse) error {
-	return h.AuditLogHandler.AuditLogDetail(ctx, in, out)
+func (h *auditLogHandler) AuditLogIndex(ctx context.Context, in *Request, out *AuditLogResponse) error {
+	return h.AuditLogHandler.AuditLogIndex(ctx, in, out)
 }
 
 func (h *auditLogHandler) AuditLogShow(ctx context.Context, in *Request, out *LogShowResponse) error {

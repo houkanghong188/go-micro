@@ -11,6 +11,15 @@ service WorksAudit {
 
 service Works{
     rpc WorksDetail(Request) returns (WorksDetailResponse) {}
+    rpc WorksIndex(WorksIndexRequest) returns (WorksIndexResponse) {}
+}
+
+message WorksIndexRequest {
+    int32    id = 1;
+    string   works_id = 2;
+    int32    uid = 5;
+    int32    limit = 6;
+    int32    offset = 7;
 }
 
 message Request {
@@ -20,8 +29,8 @@ message Request {
     string create_time = 4;
     string update_time = 5;
     int32  is_delete = 6;
-    int32  page = 7;
-    int32  page_size = 8;
+    int32    limit = 7;
+    int32    offset = 8;
     int32  id = 9;
     string works_id = 10;
     int32  status = 12;
@@ -30,19 +39,25 @@ message Request {
     repeated int32  AuditStatus = 14;
 }
 
-message ShowResponse {
-    AuditBracket data = 12;
-    int32 affectedRows = 11;
-    int32 total = 13;
-}
-
 message Response {
     repeated AuditBracket data = 12;
     int32 affectedRows = 11;
     int32 total = 13;
 }
 
+message ShowResponse {
+    AuditBracket data = 12;
+    int32 affectedRows = 11;
+    int32 total = 13;
+}
+
 message WorksResponse {
+    repeated WorksBracket data = 12;
+    int32 affectedRows = 11;
+    int32 total = 13;
+}
+
+message WorksIndexResponse {
     repeated WorksBracket data = 12;
     int32 affectedRows = 11;
     int32 total = 13;
@@ -131,8 +146,8 @@ message DailyRequest {
     int32  page = 7;
     int32  page_size = 8;
     int32   id = 9;
-    string works_id = 10;
-    int32 status = 12;
+    string  works_id = 10;
+    int32  status = 12;
     repeated int32 uids = 11;
     repeated string WorksIds = 14;
 }

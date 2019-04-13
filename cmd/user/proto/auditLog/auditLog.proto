@@ -3,7 +3,7 @@ syntax = "proto3";
 package AuditLog;
 
 service AuditLog {
-    rpc AuditLogDetail(Request) returns (AuditLogResponse) {}
+    rpc AuditLogIndex(Request) returns (AuditLogResponse) {}
     rpc AuditLogShow(Request) returns (LogShowResponse) {}
 }
 
@@ -16,11 +16,11 @@ message Request {
     string create_time = 4;
     string update_time = 5;
     int32  is_delete = 6;
-    int32  page = 7;
-    int32  page_size = 8;
+    int32  limit  = 7;
+    int32  offset = 8;
     string reason = 12;
     int32  status = 13;
-    string Works_id = 14;
+    string works_id = 14;
     repeated int32 ids = 10;
 }
 

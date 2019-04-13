@@ -5,3 +5,6 @@ config/*
 ./micro
 micro
 default.etcd/*
+./default.etcd
+nohup
+./nohup

@@ -51,7 +51,7 @@ type Works struct {
 	UpdateDevice      string         `gorm:"column:update_device"`
 	CreateSite        sql.NullInt64  `gorm:"column:create_site"`
 	CreateTime        time.Time      `gorm:"column:create_time"`
-	UpdateTime        time.Time      `gorm:"column:update_time"`
+	UpdateTime        string         `gorm:"column:update_time"`
 	IsDelete          sql.NullInt64  `gorm:"column:is_delete"`
 	IsBoughtTemplate  sql.NullInt64  `gorm:"column:is_bought_template"`
 	IsUsedLocalFonts  sql.NullInt64  `gorm:"column:is_used_local_fonts"`
@@ -114,9 +114,12 @@ func (m *WorksAuditModel) Show(ctx context.Context, req *worksAudit.Request, rsp
 	if work == (Works{}) {
 		data.Content = " "
 		data.Title = " "
+		data.UpdateTime = " "
+
 	} else {
 		data.Title = work.Title
 		data.Content = work.Content
+		data.UpdateTime = work.UpdateTime
 	}
 
 	if data.Uid != 0 {
@@ -131,7 +134,7 @@ func (m *WorksAuditModel) Index(ctx context.Context, req *worksAudit.Request, rs
 	// 获取新的 连接（这里没必要获取，只不过是 举个例子）
 	query := tool.GetMasterConn()
 
-	if req.PageSize == 0 {
+	if req.Limit == 0 {
 		return errors.New("empty rows")
 	}
 
@@ -155,7 +158,7 @@ func (m *WorksAuditModel) Index(ctx context.Context, req *worksAudit.Request, rs
 
 	data := []*worksAudit.AuditBracket{}
 
-	query.Table(m.TableName()).Limit(req.PageSize).Offset(req.PageSize * req.Page).Find(&data)
+	query.Table(m.TableName()).Limit(req.Limit).Offset(req.Offset).Find(&data)
 
 	newQuery := tool.GetMasterConn()
 	for k, v := range data {
@@ -166,11 +169,15 @@ func (m *WorksAuditModel) Index(ctx context.Context, req *worksAudit.Request, rs
 		if work == (Works{}) {
 			data[k].Content = " "
 			data[k].Title = " "
+			data[k].UpdateTime = work.UpdateTime
 		} else {
 			data[k].Title = work.Title
 			data[k].Content = work.Content
+			data[k].UpdateTime = work.UpdateTime
 		}
 	}
+
+	rsp.Data = data
 
 	return nil
 }
@@ -232,6 +239,34 @@ func (m *Works) WorksDetail(ctx context.Context, req *worksAudit.Request, rsp *w
 	if works.Uid != 0 {
 		rsp.Data = &works
 	}
+
+	return nil
+}
+
+func (m *Works) WorksIndex(ctx context.Context, req *worksAudit.WorksIndexRequest, rsp *worksAudit.WorksIndexResponse) error {
+
+	// 获取新的 连接（这里没必要获取，只不过是 举个例子）
+	query := tool.GetMasterConn()
+
+	if req.Uid == 0 || req.Limit == 0 {
+		return errors.New("empty rows")
+	}
+
+	works := []*worksAudit.WorksBracket{}
+
+	if req.Uid != 0 {
+		query = query.Where("uid = ?", req.Uid)
+	}
+
+	if req.WorksId != "" {
+		query = query.Where("works_id = ?", req.WorksId)
+	}
+
+	query.Table(m.TableName(req.Uid)).Count(&rsp.Total)
+
+	query.Debug().Table(m.TableName(req.Uid)).Limit(req.Limit).Offset(req.Offset).Find(&works)
+
+	rsp.Data = works
 
 	return nil
 }

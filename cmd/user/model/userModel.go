@@ -7,12 +7,13 @@ import (
 	"fmt"
 	"github.com/gomodule/redigo/redis"
 	"go-micro/cmd/works/model"
+	"strconv"
+
 	//"encoding/json"
 	"errors"
 	//"fmt"
 	"go-micro/cmd/user/proto"
 	"go-micro/tool"
-	"strconv"
 	"time"
 )
 
@@ -128,23 +129,12 @@ func (m *UserModel) Closure(ctx context.Context, req *user.Request, rsp *user.Re
 	}
 
 	var User = UserModel{}
-	query.Where("id = ?", req.Id).First(&User)
-	User.Status = req.Status
-	query.Table(User.TableName()).Updates(req)
-
-	// 封禁表
-	worksName := "platv5_works_" + strconv.Itoa(int(req.Uid%16))
-	var workStatus int
-	if req.Status == 1 {
-		workStatus = -3
-	} else {
-		workStatus = 0
-	}
-	query.Table(worksName).Where("uid = ?", req.Uid).Update("status", workStatus)
+	query.Where("id = ?", req.Uid).First(&User)
+	query.Table(User.TableName()).Where("id = ?", req.Uid).Update("status", req.Status)
 
 	// 添加日志
 	var LogType string
-	if req.Status == 1 {
+	if req.Status == 0 {
 		LogType = "block"
 		blockWorks(req.Uid)
 	} else {
@@ -154,24 +144,35 @@ func (m *UserModel) Closure(ctx context.Context, req *user.Request, rsp *user.Re
 	auditLog := AuditLogModel{Uid: req.Uid, Reason: req.Reason, Type: LogType}
 	query.Create(&auditLog)
 
+	// 如果有封禁日期
+	if req.ClosureDay != "" {
+		c, _ := tool.GetRedis()
+		c.Do("hset", "user_closure_day"+req.ClosureDay, req.Uid)
+	}
 	// 设置redis
 	return nil
 }
 
 func blockWorks(uid int32) {
-	worksIds := []model.Works{}
-	//worksIds := []string{}
 	query := tool.GetMasterConn()
-	query.Table("platv5_works_11").Select("works_id").Where("uid = ?", uid).Scan(&worksIds)
+	worksName := "platv5_works_" + strconv.Itoa(int(uid%16))
+	worksIds := []model.Works{}
+	query.Table(worksName).Select("works_id").Where("uid = ?", uid).Scan(&worksIds)
 	//设置对应信息
 	b, err := json.Marshal(worksIds)
 	if err != nil {
-		fmt.Println("jinlai")
 	}
 	c, _ := tool.GetRedis()
 	_, berr := c.Do("hset", "user_closure", uid, b)
 	if berr != nil {
 		fmt.Println(berr)
+	}
+	for _, v := range worksIds {
+		if v.WorksID == "" {
+			continue
+		}
+		newQuery := tool.GetMasterConn()
+		newQuery.Table(v.TableName(v.UID)).Where("works_id = ?", v.WorksID).Update("status", -3)
 	}
 }
 
@@ -179,15 +180,15 @@ func deBlockWorks(uid int32) {
 	c, _ := tool.GetRedis()
 
 	redisWorksIds, err := redis.String(c.Do("hget", "user_closure", uid))
-	if err == nil {
+	if err != nil {
 		return
 	}
 	data := []model.Works{}
 	json.Unmarshal([]byte(redisWorksIds), &data)
-	fmt.Println(data)
 
 	for _, v := range data {
-		if !(v.WorksID == "") {
+		fmt.Println(v)
+		if v.WorksID == "" {
 			continue
 		}
 		newQuery := tool.GetMasterConn()

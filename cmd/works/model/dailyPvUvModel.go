@@ -31,7 +31,7 @@ func (m *DailyPvUvModel) Index(ctx context.Context, req *worksAudit.DailyRequest
 	query := tool.GetStatisticsConn()
 
 	if len(req.WorksIds) == 0 {
-		return errors.New("empty rows")
+		return errors.New("worksIds empty")
 	}
 
 	works := rsp.Data

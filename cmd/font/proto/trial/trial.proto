@@ -1,0 +1,32 @@
+syntax = "proto3";
+package trial;
+
+service AuthCompany {
+    rpc Show(ShowRequest) returns (ShowResponse) {}
+    rpc Create(CreateRequest) returns (CreateResponse) {}
+}
+
+message CreateRequest {
+    int32  uid = 1;
+    string  name = 2;
+    string contract = 4;
+    string phone = 5;
+}
+
+message CreateResponse {
+    int32 affectedRows = 1;
+}
+
+message ShowRequest {
+    int32 id = 4;
+}
+
+message ShowResponse {
+    int32  uid = 1;
+    string  name = 2;
+    string contract = 4;
+    string phone = 5;
+}
+
+
+

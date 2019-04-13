@@ -8,10 +8,12 @@ It is generated from these files:
 	worksAudit.proto
 
 It has these top-level messages:
+	WorksIndexRequest
 	Request
-	ShowResponse
 	Response
+	ShowResponse
 	WorksResponse
+	WorksIndexResponse
 	WorksDetailResponse
 	AuditBracket
 	WorksBracket
@@ -162,6 +164,7 @@ func (h *worksAuditHandler) AuditUpdate(ctx context.Context, in *Request, out *R
 
 type WorksService interface {
 	WorksDetail(ctx context.Context, in *Request, opts ...client.CallOption) (*WorksDetailResponse, error)
+	WorksIndex(ctx context.Context, in *WorksIndexRequest, opts ...client.CallOption) (*WorksIndexResponse, error)
 }
 
 type worksService struct {
@@ -192,15 +195,27 @@ func (c *worksService) WorksDetail(ctx context.Context, in *Request, opts ...cli
 	return out, nil
 }
 
+func (c *worksService) WorksIndex(ctx context.Context, in *WorksIndexRequest, opts ...client.CallOption) (*WorksIndexResponse, error) {
+	req := c.c.NewRequest(c.name, "Works.WorksIndex", in)
+	out := new(WorksIndexResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Works service
 
 type WorksHandler interface {
 	WorksDetail(context.Context, *Request, *WorksDetailResponse) error
+	WorksIndex(context.Context, *WorksIndexRequest, *WorksIndexResponse) error
 }
 
 func RegisterWorksHandler(s server.Server, hdlr WorksHandler, opts ...server.HandlerOption) error {
 	type works interface {
 		WorksDetail(ctx context.Context, in *Request, out *WorksDetailResponse) error
+		WorksIndex(ctx context.Context, in *WorksIndexRequest, out *WorksIndexResponse) error
 	}
 	type Works struct {
 		works
@@ -215,6 +230,10 @@ type worksHandler struct {
 
 func (h *worksHandler) WorksDetail(ctx context.Context, in *Request, out *WorksDetailResponse) error {
 	return h.WorksHandler.WorksDetail(ctx, in, out)
+}
+
+func (h *worksHandler) WorksIndex(ctx context.Context, in *WorksIndexRequest, out *WorksIndexResponse) error {
+	return h.WorksHandler.WorksIndex(ctx, in, out)
 }
 
 // Client API for DailyPvUv service
