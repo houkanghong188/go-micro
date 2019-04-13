@@ -9,7 +9,6 @@ import (
 
 var RedisPool *redis.Pool
 
-
 func init() {
 	fmt.Println("redis pool init")
 	RedisPool = &redis.Pool{
@@ -33,12 +32,12 @@ func init() {
 	}
 }
 
-func test() {
-	pool := RedisPool
-	conn := pool.Get()
-	defer pool.Close()
+// todo 处理 err 事件
+func GetRedis() (redis.Conn, error) {
+	conn := RedisPool.Get()
 	if conn.Err() != nil {
-		//TODO
+		return nil, conn.Err()
 	}
 
+	return conn, nil
 }

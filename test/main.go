@@ -5,6 +5,6 @@ import (
 	"go-micro/tool"
 )
 
-func main()  {
-	fmt.Println(tool.Config["hosts"])
+func main() {
+	fmt.Println(tool.MysqlMaster.Error)
 }

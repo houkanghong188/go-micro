@@ -1,0 +1,7 @@
+etcdv3:
+  command: -server -bootstrap -rejoin
+  image: progrium/etcdv3:latest
+  hostname: "registry"
+  ports:
+    - "2379:2379"
+

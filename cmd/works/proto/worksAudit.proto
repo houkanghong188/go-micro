@@ -1,0 +1,150 @@
+syntax = "proto3";
+
+package worksAudit;
+
+service WorksAudit {
+    rpc Show(Request) returns (ShowResponse) {}
+    rpc Index(Request) returns (Response) {}
+    rpc WorksUpdate(Request) returns (Response) {}
+    rpc AuditUpdate(Request) returns (Response) {}
+}
+
+service Works{
+    rpc WorksDetail(Request) returns (WorksDetailResponse) {}
+}
+
+message Request {
+    string name = 1;
+    string type = 2;
+    string value = 3;
+    string create_time = 4;
+    string update_time = 5;
+    int32  is_delete = 6;
+    int32  page = 7;
+    int32  page_size = 8;
+    int32  id = 9;
+    string works_id = 10;
+    int32  status = 12;
+    int32  uid = 11;
+    string reason = 13;
+    repeated int32  AuditStatus = 14;
+}
+
+message ShowResponse {
+    AuditBracket data = 12;
+    int32 affectedRows = 11;
+    int32 total = 13;
+}
+
+message Response {
+    repeated AuditBracket data = 12;
+    int32 affectedRows = 11;
+    int32 total = 13;
+}
+
+message WorksResponse {
+    repeated WorksBracket data = 12;
+    int32 affectedRows = 11;
+    int32 total = 13;
+}
+
+message WorksDetailResponse {
+    WorksBracket data = 12;
+    int32 affectedRows = 11;
+    int32 total = 13;
+}
+
+message AuditBracket{
+    int32   id = 9;
+    int32   uid = 1;
+    string  event_id = 2;
+    int32   status = 7;
+    string  type = 3;
+    string  create_time = 4;
+    string  update_time = 5;
+    int32   is_delete = 6;
+    string  title = 10;
+    string  content = 11;
+}
+
+message WorksBracket{
+    int32    id = 1;
+    string   worksId =2;
+    int32    uid = 3;
+    string   title = 4;
+    string   content = 5;
+    string   comment = 6;
+    string   thumb = 7;
+    string   firstImg = 8;
+    int32    version = 9;
+    int32    editorVersion = 10;
+    string   template_id = 11;
+    string   parent_event_id = 12;
+    int32    identity = 13;
+    int32    category = 14;
+    int32    size_id = 15;
+    int32    secondary_category = 16;
+    int32    page_height = 17;
+    string   other_property = 18;
+    int32    page_width = 20;
+    int32    suite_app_type = 21;
+    string    create_device = 22;
+    string    update_device = 23;
+    int32     create_site = 24;
+    string    create_time = 25;
+    string    update_time = 26;
+    int32   is_delete = 27;
+    int32   is_bought_template = 28;
+    int32   is_used_local_fonts = 29;
+    int32   status = 30;
+}
+
+
+service DailyPvUv {
+    rpc Show(DailyRequest) returns (DailyResponse) {}
+    rpc Index(DailyRequest) returns (DailyIndexResponse) {}
+}
+
+message DailyPvUvBracket{
+    int32   id = 1;
+    string  pid = 2;
+    string  access_date = 3;
+    string  event_id = 13;
+    int32   pv = 4;
+    int32   uv  = 5;
+    int32   tail_ad = 6;
+    int32   share = 7;
+    int32   total_share = 8;
+    int32   total_tail_ad = 9;
+    int32   total_pv = 10;
+    int32   total_uv = 11;
+    int32   uid = 12;
+}
+
+message DailyRequest {
+    string name = 1;
+    string type = 2;
+    string value = 3;
+    string create_time = 4;
+    string update_time = 5;
+    int32  is_delete = 6;
+    int32  page = 7;
+    int32  page_size = 8;
+    int32   id = 9;
+    string works_id = 10;
+    int32 status = 12;
+    repeated int32 uids = 11;
+    repeated string WorksIds = 14;
+}
+
+message DailyResponse {
+    DailyPvUvBracket data = 12;
+    int32 affectedRows = 11;
+    int32 total = 13;
+}
+
+message DailyIndexResponse {
+    repeated DailyPvUvBracket data = 12;
+    int32 affectedRows = 11;
+    int32 total = 13;
+}

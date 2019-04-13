@@ -2,3 +2,6 @@
 config/*
 ./config
 ./config/*
+./micro
+micro
+default.etcd/*

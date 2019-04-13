@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+service AuditConf {
+    rpc Create(Request) returns (Response) {}
+    rpc Update(Request) returns (Response) {}
+    rpc Show(Request) returns (Response) {}
+    rpc Index(Request) returns (Response) {}
+}
+
+message Request {
+    int32   id = 9;
+    string name = 1;
+    string type = 2;
+    string value = 3;
+    string create_time = 4;
+    string update_time = 5;
+    int32  is_delete = 6;
+    int32  page = 7;
+    int32  page_size = 8;
+}
+
+message AuditConfBracket{
+    int32   id = 9;
+    string name = 1;
+    string type = 2;
+    string value = 3;
+    string create_time = 4;
+    string update_time = 5;
+    int32 is_delete = 6;
+}
+
+message Response {
+    repeated AuditConfBracket data = 12;
+    int32 affectedRows = 11;
+    int32 total = 13;
+}
+
