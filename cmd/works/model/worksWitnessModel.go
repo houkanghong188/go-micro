@@ -34,7 +34,7 @@ func (m *WorksWitnessesModel) Index(ctx context.Context, req *witness.WitnessesR
 
 	query.Table(m.TableName()).Count(&rsp.Total)
 
-	if req.PageSize == 0 {
+	if req.Limit == 0 {
 		return errors.New("empty rows")
 	}
 
@@ -50,7 +50,7 @@ func (m *WorksWitnessesModel) Index(ctx context.Context, req *witness.WitnessesR
 		query = query.Where("event_id = ?", req.WorksId)
 	}
 
-	query = query.Limit(req.PageSize).Offset(req.PageSize * req.Page)
+	query = query.Limit(req.Limit).Offset(req.Offset)
 
 	query.Count(rsp.Total)
 

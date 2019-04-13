@@ -15,8 +15,8 @@ message Request {
     string create_time = 4;
     string update_time = 5;
     int32  is_delete = 6;
-    int32  page = 7;
-    int32  page_size = 8;
+    int32  limit = 7;
+    int32  offset = 8;
 }
 
 message AuditConfBracket{
