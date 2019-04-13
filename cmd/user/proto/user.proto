@@ -5,8 +5,6 @@ package user;
 service User {
     rpc Show(Request) returns (Response) {}
     rpc Closure(Request) returns (Response) {}
-//    rpc AuditLogDetail(Request) returns (AuditLogResponse) {}
-//    rpc AuditLogShow(Request) returns (LogShowResponse) {}
 }
 
 message Request {
