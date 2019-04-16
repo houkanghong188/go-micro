@@ -2,6 +2,7 @@ package models
 
 import (
 	"context"
+	"fmt"
 	"go-micro/cmd/template/proto/templateStore"
 	"go-micro/tool"
 )
@@ -63,6 +64,13 @@ func (m *TemplateStoreModel) TableName() string {
 
 // 通过 template_ids 获取 template_store  template_store_info 信息
 func (m *TemplateStoreModel) Index(ctx context.Context, in *templateStore.Request, out *templateStore.Response) error {
+
+	// 拦截 错误，仅仅报错，并使本次请求出错
+	defer func() {
+		if p := recover(); p != nil {
+			fmt.Printf("捕获到的错误：%s\n", p)
+		}
+	}()
 
 	conn := tool.GetSlavelConn()
 	info := NewTemplateStoreInfoModel()
