@@ -15,5 +15,40 @@ message Response{
 
 message Template{
     int32 id = 1;
-    string templateId = 2;
+    string templateId =2;
+    int32 designerId = 3;
+    int32 price       =4;
+    int32 version       =5;
+    int32 Star             =6;
+    int32 level        =7;
+    int32  sort           = 8;
+    string status  =9;
+    int32 isImgCaptured     =10;
+    string latestCaptureTime =11;
+    int32 discount       =12;
+    string corner          =13;
+    int32 saleNumber    =14;
+    int32 showSaleNumber    =15;
+    int32 pv             =16;
+    int32 uv              =17;
+    int32 isVipFree       =18;
+   string onlineTime       =19;
+    string firstOnlineTime  =20;
+    int32 isDelete         =21;
+    string createTime     =22;
+    string updateTime    =23;
+    string title      = 24;
+    int32 identity    =25;
+    int32 category    =26;
+    int32 secondaryCategory =27;
+    int32 scene      =28;
+    int32 secondaryScene   =29;
+    int32 industry   =30  ;
+    int32 secondaryIndustry =31;
+    int32 style         =32;
+    int32 color          =33;
+    int32 size          =34;
+    string cruxWords      =35;
+    string templateInfo   =36;
+    string templateProperty =37;
 }

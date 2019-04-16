@@ -47,39 +47,38 @@ func (m *MarketContentConfModel) TableName() string {
 }
 
 func (m *MarketContentConfModel) Index(ctx context.Context, in *marketContentConf.Request, out *marketContentConf.Response) error {
-	conn := tool.GetMasterConn()
+	// 拦截 错误，仅仅报错，并使本次请求出错
+	defer func() {
+		if p := recover(); p != nil {
+			fmt.Printf("捕获到的错误：%s\n", p)
+		}
+	}()
+
+	conn := tool.GetSlavelConn()
 
 	conn.Table(m.TableName()).Where("mark in (?) and status = 1", in.Mark).Find(&out.ContentConf)
-
-	var content []*marketContentConf.ContentConf
-	var recommend2 []*marketContentConf.ContentRecommend
-	conn.Table(m.TableName()).Where("mark in (?) and status = 1", in.Mark).Related(&recommend2).Find(&out.ContentConf)
-	conn.Model(&content).Related(&recommend2)
-	fmt.Println(recommend2)
 
 	var ids []int32
 	for _, v := range out.ContentConf {
 		ids = append(ids, v.Id)
 	}
 
-	fmt.Println(ids)
+	conn = tool.GetSlavelConn()
+	m2 := NewMarketContentRecommendModel()
 
-	//conn = tool.GetSlavelConn()
-	////m2 := NewMarketContentRecommendModel()
-	//
-	//var recommend []*marketContentConf.ContentRecommend
-	////conn.Table(m2.TableName()).Where("content_id in (?) and is_delete = 0", ids).Find(&recommend)
-	//
-	//reMap := make(map[int32][]*marketContentConf.ContentRecommend)
-	//for _,v := range recommend{
-	//	reMap[v.ContentId] = append(reMap[v.ContentId],v)
-	//}
-	//
-	//for k,v := range out.ContentConf {
-	//	if res, ok := reMap[v.Id]; ok {
-	//		out.ContentConf[k].Recommend = res
-	//	}
-	//}
+	var recommend []*marketContentConf.ContentRecommend
+	conn.Table(m2.TableName()).Where("content_id in (?) and is_delete = 0", ids).Find(&recommend)
+
+	reMap := make(map[int32][]*marketContentConf.ContentRecommend)
+	for _, v := range recommend {
+		reMap[v.ContentId] = append(reMap[v.ContentId], v)
+	}
+
+	for k, v := range out.ContentConf {
+		if res, ok := reMap[v.Id]; ok {
+			out.ContentConf[k].Recommend = res
+		}
+	}
 
 	return nil
 }
