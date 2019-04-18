@@ -1,0 +1,52 @@
+syntax ="proto3";
+package userVip;
+
+service userVipService{
+    rpc userVipInfo(userVipInfoRequest) returns(userVipInfoResponse);
+}
+
+message userVipInfoRequest{
+    int32 uid = 1;
+}
+message userVipInfoResponse{
+   repeated vipInfo vips = 1;
+}
+
+// 可以独立到 customer_vips 中去，独立出来作为会员基本信息
+message vipInfo{
+    int32 id = 1;
+    string alias = 2;
+    string name = 3;
+    string price = 4;
+    string corner = 5;
+    string cornetText = 6;
+    int32 enableMaka = 7;
+    int32 enableDanye = 8;
+    int32 enablePoster = 9;
+    int32 enableVideo = 10;
+    int32 enableFont = 11;
+    int32 enableLogo = 12;
+    int32 enablePosterLogo = 13;
+    int32 enableMaterial = 14;
+    int32 enableContract = 15;
+    int32 enableBottomMenu = 16;
+    int32 enableLottery = 17;
+    int32 enableRelay = 18;
+    int32 enableFormLamp = 19;
+    int32 enableEndPageStyle = 20;
+    int32 enableEndPageReadNum = 21;
+    int32 enablePublicBall = 22;
+    int32 enableOpenPassword =23;
+    int32 enablePvuvData = 24;
+    int32 enableSharedata = 25;
+    int32 enableReadTime = 26;
+    int32 enableReadTimePerPage = 27;
+    int32 enablePagesReadTime = 28;
+    int32 enablePagesPvuvData = 29;
+    int32 enableVisitorSource = 30;
+    int32 enableVisitorDevice = 31;
+    int32 enableVisitorLocation =32;
+    int32 enableVisitorBrand = 33;
+    int32 sort = 34;
+    int32 status = 35;
+}

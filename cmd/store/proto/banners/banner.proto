@@ -1,0 +1,14 @@
+syntax = "proto3";
+package banners;
+
+service BannerService{
+    rpc Index(Request) returns(Response);
+}
+
+message Request{
+    string device = 1;
+}
+
+message Response{
+
+}
