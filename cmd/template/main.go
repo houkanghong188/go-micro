@@ -20,7 +20,6 @@ func main() {
 		micro.RegisterInterval(10*time.Second),
 	)
 
-	// 可以重启么，并美誉，日光了哦股了。
 	service.Init()
 	// 根据 mark 参数 查询推荐信息， 商城推荐模版列表，归属 模版服务
 	marketContentConf.RegisterMarketContentConfHandler(service.Server(), models.NewMarketContentConfModel())

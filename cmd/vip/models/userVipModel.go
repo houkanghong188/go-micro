@@ -25,7 +25,12 @@ func (m *UserVipModel) TableName() string {
 func (m *UserVipModel) UserVipInfo(ctx context.Context, in *userVip.UserVipInfoRequest, out *userVip.UserVipInfoResponse) error {
 
 	conn := tool.GetSlavelConn()
-	conn.Table(m.TableName()).Where("uid in (?) and status = ?", in.Uid, STATUS_NORMAL).Find(&out.Vips)
+	var customerVipIds []string
+	conn.Table(m.TableName()).Select("customer_vip_id").Where("uid in (?) and status = ?", in.Uid, STATUS_NORMAL).Find(&customerVipIds)
+
+	conn = tool.GetSlavelConn()
+	customerVipModel := NewCustomerVipsModel()
+	conn.Table(customerVipModel.TableName()).Where("id in (?)", customerVipIds).Find(&out.Vips)
 
 	// api/v5/micro/$1
 	return nil
