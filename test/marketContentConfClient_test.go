@@ -14,10 +14,10 @@ import (
 
 func TestMarketContentConfClient(t *testing.T) {
 	srv := marketContentConf.NewMarketContentConfService("go.micro.srv.marketContentConf", service.Client())
-	mark := &marketContentConf.Mark{Name: "pc_category"}
+	mark := []string{"pc_category"}
 
 	rsp, err := srv.Index(context.Background(), &marketContentConf.Request{
-		Mark: []*marketContentConf.Mark{mark},
+		Mark: mark,
 	})
 
 	if err != nil {

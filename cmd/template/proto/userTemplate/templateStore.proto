@@ -1,7 +1,7 @@
 syntax = "proto3";
-package templateStore;
+package userTemplate;
 
-service TemplateStoreService{
+service UserTemplateService{
     rpc Index(Request) returns(Response);
 }
 
